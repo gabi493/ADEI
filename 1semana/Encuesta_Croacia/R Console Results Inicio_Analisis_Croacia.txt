@@ -1,0 +1,2296 @@
+
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+
+R es un software libre y viene sin GARANTIA ALGUNA.
+Usted puede redistribuirlo bajo ciertas circunstancias.
+Escriba 'license()' o 'licence()' para detalles de distribucion.
+
+R es un proyecto colaborativo con muchos contribuyentes.
+Escriba 'contributors()' para obtener más información y
+'citation()' para saber cómo citar R o paquetes de R en publicaciones.
+
+Escriba 'demo()' para demostraciones, 'help()' para el sistema on-line de ayuda,
+o 'help.start()' para abrir el sistema de ayuda HTML con su navegador.
+Escriba 'q()' para salir de R.
+
+[R.app GUI 1.65 (6833) x86_64-apple-darwin13.4.0]
+
+[History restored from /Users/gabriel/.Rapp.history]
+
+> rm(list = ls()) #eliminar objetos
+> 
+> ### CARGAR LOS PACKAGES FACTOMINER Y MASS
+> library(FactoMineR)
+> library(MASS)
+> 
+> 
+> # Leer la base (que está en este mismo directorio)
+> baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")
+> baseCD<-read.csv2("Croacia_Var_C_D.csv",row.names=1,header=TRUE,dec=".")
+> base<-cbind(baseB,baseCD)
+> 
+> 
+> ### SF36 Health Survey ###
+> browseURL("http://www.sf-36.org/tools/sf36.shtml")
+>  
+> # información inicial sobre la base
+> dim(base)
+[1] 5037   82
+> colnames(base)
+ [1] "Sex"         "SKOLA"       "Prihodi"     "MAT_STAN"    "B1"          "B2"         
+ [7] "B3"          "B41"         "B42"         "B43"         "B44"         "B45"        
+[13] "B46"         "B47"         "B48"         "B49"         "B410"        "B51"        
+[19] "B52"         "B53"         "B54"         "B61"         "B62"         "B63"        
+[25] "B7"          "B8"          "B9"          "B10_1"       "B10_2"       "B10_3"      
+[31] "B10_4"       "B10_5"       "B10_6"       "B10_7"       "B10_8"       "B10_9"      
+[37] "B11"         "B12_1"       "B12_2"       "B12_3"       "B12_4"       "Edad_classe"
+[43] "Sexo_edad"   "Edad"        "PF_Phisica"  "RP_Role.li"  "RE_Role.li"  "SF_Social"  
+[49] "MH_Mental"   "EV_Energy"   "P_Pain"      "HP_General"  "C9"          "C10"        
+[55] "C11"         "C13"         "C14"         "C15"         "C16VIS"      "C16TEZ"     
+[61] "C17S_KT"     "C17D_KT"     "D1A"         "D1AKOLIK"    "D1B"         "D1BKOLIK"   
+[67] "D1C"         "D1CKOLIK"    "D3"          "D3KOLIKO"    "D4"          "D4KOLIKO"   
+[73] "D5"          "D6"          "D13"         "D13KOLIK"    "D14A"        "D14B"       
+[79] "D14C"        "D14D"        "D14E"        "D14F"       
+> summary(base)
+     Sex                     SKOLA             Prihodi            MAT_STAN   
+ female:3057   faculty_PhD_MSc  : 523   to 1000 Kn): 652   average    :2479  
+ male  :1980   grammar_school   :1930   (1000_1500): 576   low        :1069  
+               handicraft_school: 612   (4000_5000): 540   overaverage: 608  
+               high_school      : 334   (2000_2500): 524   unknown    :  21  
+               no_school        : 631   (2500_3000): 511   verylow    : 860  
+               primary_school   :1007   (1500_2000): 507                     
+                                        (Other)    :1727                     
+                B1                      B2                        B3      
+ health_excellent: 472   betterothers    : 928   better last y     : 492  
+ health_fair     :1322   eqaulothers     :2791   equal last y      :2705  
+ health_good     :1367   muchbetterothers: 257   much better last y: 246  
+ health_poor     :1043   muchworseothers : 217   much worse last y : 433  
+ health_very good: 833   unknownothers   :   4   worse last y      :1161  
+                         worseothers     : 840                            
+                                                                          
+                   B41                         B42                         B43      
+ hard phy_limited a  :1215   mod phy_ limited a  :1296   groc_ not at all    :2912  
+ hard phy_much limite:1819   mod phy_ not at all :2737   groc_limited a littl:1241  
+ hard phy_not at all :2003   mod phy_much limited:1004   groc_much limited   : 884  
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                   B44                       B45                         B46      
+ climstairs_lim_littl:1294   clim1_limited     :1053   bending_lim a littl :1371  
+ climstairs_much limt:1168   clim1_much limited: 790   bending_much limited:1098  
+ climstairs_notat all:2575   clim1_not at all  :3194   bending_not at all  :2568  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                   B47                         B48                         B49      
+ walk1km_limited     : 985   walkseg_limited     : 863   walk1block_limited  : 688  
+ walk1km_much limited:1112   walkseg_much limited: 799   walk1block_much lim : 603  
+ walk1km_not at all  :2940   walkseg_not at all  :3375   walk1block_notat all:3746  
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                 B410                       B51                         B52      
+ dress_limited     : 585   health_cut work_no :3363   health_would like_no:3001  
+ dress_much limited: 574   health_cut work_yes:1674   health_wouldlike_yes:2036  
+ dress_no at all   :3878                                                         
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                   B53                         B54                      B61      
+ limited_kindwork_yes:1754   health_diff work_no :3047   emot cut work_no :3816  
+ limited_king work_no:3283   health_diff work_yes:1990   emot cut work_yes:1221  
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                   B62                         B63                         B7      
+ emot less_w.like_no :3528   emot_work careful_no:3600   soc act_extremly   : 172  
+ emot less_w.like_yes:1509   emot_workcareful_yes:1437   soc act_moderately : 768  
+                                                         soc act_not at all :2518  
+                                                         soc act_quite a bit: 508  
+                                                         soc act_slightely  :1071  
+                                                                                   
+                                                                                   
+                    B8                          B9                        B10_1     
+ bodily pain_mild    : 803   pain act_extremly   : 341   full pep_ none time : 381  
+ bodily pain_moderate:1243   pain act_little bit :1115   full pep_all time   : 415  
+ bodily pain_none    :1371   pain act_moderate   : 758   full pep_good time  :1111  
+ bodily pain_severe  : 676   pain act_not at all :2070   full pep_little time: 914  
+ bodily pain_very sev: 213   pain act_quite a bit: 753   full pep_most time  : 683  
+ bodily pain_verymild: 731                               full pep_some time  :1533  
+                                                                                    
+                 B10_2                       B10_3                   B10_4     
+ mervous_good time  : 706   felt down_all time  : 122   calm_all time   : 314  
+ nervous_all time   : 184   felt down_good time : 415   calm_good time  :1403  
+ nervous_little time:1343   felt down_little tim:1425   calm_little time: 970  
+ nervous_most time  : 332   felt down_most time : 209   calm_most time  : 748  
+ nervous_none time  : 528   felt down_none time :1811   calm_none time  : 251  
+ nervous_some time  :1944   felt down_some time :1055   calm_some time  :1351  
+                                                                               
+                  B10_5                       B10_6                       B10_7     
+ lot energy_all time : 480   down heart_all time : 131   worn out_all time   : 264  
+ lot energy_good time: 988   down heart_good time: 482   worn out_good time  : 927  
+ lot energy_little t :1070   down heart_little t :1701   worn out_little time:1048  
+ lot energy_most time: 721   down heart_most time: 254   worn out_most time  : 438  
+ lot energy_none time: 454   down heart_none time:1071   worn out_none time  : 524  
+ lot energy_some time:1324   down heart_some time:1398   worn out_some time  :1836  
+                                                                                    
+               B10_8                    B10_9                        B11      
+ happy_all time   : 443   tired_all time   : 350   probl life_all time : 241  
+ happy_good time  :1261   tired_good time  : 918   probl life_little t :1214  
+ happy_little time: 735   tired_little time: 830   probl life_most time: 408  
+ happy_most time  : 827   tired_most time  : 509   probl life_none time:1832  
+ happy_none time  : 230   tired_none time  : 281   probl life_some time:1342  
+ happy_some time  :1541   tired_some time  :2149                              
+                                                                              
+                  B12_1                       B12_2                      B12_3     
+ sick easy_def. false:1401   healthy_def. false  : 401   expect_def_ false  : 958  
+ sick easy_def. true : 262   healthy_def. true   : 580   expect_def.true    : 381  
+ sick easy_don't know:1350   healthy_don't know  :1372   expect_don't know  :1977  
+ sick easy_mostly fal:1380   healthy_mostly false: 864   expect_mostly false: 767  
+ sick easy_mostly tru: 644   healthy_mostly true :1820   expect_mostly true : 954  
+                                                                                   
+                                                                                   
+                  B12_4      Edad_classe                  Sexo_edad         Edad      
+ excellent_def.false : 979   18_25 a\xf1os      :639   f(66_75): 501   Min.   :18.00  
+ excellent_def.true  : 602   26_35 a\xf1os      :833   f(46_55): 489   1st Qu.:33.00  
+ excellent_don't know: 580   36_45 a\xf1os      :766   f(26_35): 487   Median :49.00  
+ excellent_mostly fal:1185   46_55 a\xf1os      :794   f(36-45): 474   Mean   :49.09  
+ excellent_mostly t  :1691   56_65 a\xf1os      :798   f(56_65): 472   3rd Qu.:65.00  
+                             66_75 a\xf1os      :818   f(18_25): 381   Max.   :94.00  
+                             76 y m\xe1s a\xf1os:389   (Other) :2233                  
+   PF_Phisica       RP_Role.li    RE_Role.li       SF_Social       MH_Mental     
+ Min.   :  0.00   Min.   :  0   Min.   :  0.00   Min.   : 0.00   Min.   :  0.00  
+ 1st Qu.: 45.00   1st Qu.: 25   1st Qu.: 33.33   1st Qu.:44.44   1st Qu.: 48.00  
+ Median : 80.00   Median :100   Median :100.00   Median :66.67   Median : 64.00  
+ Mean   : 69.93   Mean   : 63   Mean   : 72.42   Mean   :64.83   Mean   : 61.69  
+ 3rd Qu.:100.00   3rd Qu.:100   3rd Qu.:100.00   3rd Qu.:88.89   3rd Qu.: 76.00  
+ Max.   :100.00   Max.   :100   Max.   :100.00   Max.   :88.89   Max.   :100.00  
+                                                                                 
+   EV_Energy          P_Pain         HP_General                     C9      
+ Min.   :  0.00   Min.   :  0.00   Min.   :  0.00   smoking-no       :3288  
+ 1st Qu.: 35.00   1st Qu.: 44.44   1st Qu.: 35.00   smoking-sometimes: 421  
+ Median : 55.00   Median : 66.67   Median : 57.00   smoking-unknown  :  12  
+ Mean   : 51.83   Mean   : 64.51   Mean   : 54.26   smoking-yes      :1316  
+ 3rd Qu.: 65.00   3rd Qu.:100.00   3rd Qu.: 72.00                           
+ Max.   :100.00   Max.   :100.00   Max.   :100.00                           
+                                                                            
+                 C10                         C11         C13                     
+ cigarettes-20 more: 616   ever smoked-99      : 558   alcohol-1\xf32 week: 536  
+ cigarettes-99     : 535   ever smoked-no      :2167   alcohol-99         :  27  
+ cigarettes-less 20:1128   ever smoked-sometime: 704   alcohol-every day  : 883  
+ cigarettes-none   :2758   ever smoked-yes     :1608   alcohol-never      :1004  
+                                                       alcohol-not now    : 386  
+                                                       alcohol-sometime   : 946  
+                                                       alcohol-very rarely:1255  
+           C14                C15           C16VIS          C16TEZ          C17S_KT     
+ drink-99    :1394   act-jogging: 836   Min.   :120.0   Min.   : 20.00   Min.   : 80.0  
+ drink-beer  :1094   act-reading:2260   1st Qu.:164.0   1st Qu.: 63.00   1st Qu.:120.0  
+ drink-spirit: 466   act-sport  : 184   Median :170.0   Median : 73.00   Median :130.0  
+ drink-wine  :2083   act-unknown: 215   Mean   :170.1   Mean   : 73.98   Mean   :136.5  
+                     act-walking:1542   3rd Qu.:176.0   3rd Qu.: 84.00   3rd Qu.:150.0  
+                                        Max.   :200.0   Max.   :140.00   Max.   :240.0  
+                                        NA's   :76      NA's   :33       NA's   :637    
+    C17D_KT           D1A          D1AKOLIK                   D1B          D1BKOLIK     
+ Min.   : 45.00   GP-99 :  72   Min.   :  0.000   specialist-99 : 273   Min.   : 0.000  
+ 1st Qu.: 80.00   GP-no :1018   1st Qu.:  1.000   specialist-no :2237   1st Qu.: 0.000  
+ Median : 80.00   GP-yes:3947   Median :  2.000   specialist-yes:2527   Median : 1.000  
+ Mean   : 83.82                 Mean   :  4.766                         Mean   : 1.733  
+ 3rd Qu.: 90.00                 3rd Qu.:  6.000                         3rd Qu.: 2.000  
+ Max.   :150.00                 Max.   :180.000                         Max.   :70.000  
+ NA's   :637                    NA's   :257                             NA's   :392     
+           D1C          D1CKOLIK              D3          D3KOLIKO                     D4      
+ dentisit-99 : 279   Min.   : 0.000   0        :  39   Min.   : 0.0000   any recipes-no :1342  
+ dentisit-yes:2182   1st Qu.: 0.000   nurce-no :4639   1st Qu.: 0.0000   any recipes-yes:3661  
+ dentist-no  :2576   Median : 0.000   nurce-yes: 359   Median : 0.0000   any recipes99  :  34  
+                     Mean   : 1.518                    Mean   : 0.4007                         
+                     3rd Qu.: 2.000                    3rd Qu.: 0.0000                         
+                     Max.   :52.000                    Max.   :72.0000                         
+                     NA's   :374                       NA's   :31                              
+    D4KOLIKO                          D5                          D6      
+ Min.   :  0.000   should drug-no      : 289   explain drug-no     : 295  
+ 1st Qu.:  0.000   should drug-unknownn: 187   explain drug-unknown: 158  
+ Median :  2.000   should drug-yes     :4561   explain drug-yes    :4584  
+ Mean   :  5.484                                                          
+ 3rd Qu.:  5.000                                                          
+ Max.   :150.000                                                          
+ NA's   :373                                                              
+               D13          D13KOLIK                    D14A                   D14B     
+ hospitalized-99 :  61   Min.   :  0.000   measured BP-99 : 135   blood/urine-99 : 251  
+ hospitalized-no :4266   1st Qu.:  0.000   measured BP-no :1053   blood/urine-no :1905  
+ hospitalized-yes: 710   Median :  0.000   measured BP-yes:3849   blood/urine-yes:2881  
+                         Mean   :  2.107                                                
+                         3rd Qu.:  0.000                                                
+                         Max.   :150.000                                                
+                         NA's   :87                                                     
+                D14C                    D14D                        D14E     
+ control teeth-99 : 295   control lung-99 : 500   PAP test(female)-99 :2175  
+ control teeth-no :2458   control lung-no :3307   PAP test(female)-no :1734  
+ control teeth-yes:2284   control lung-yes:1230   PAP test(female)-yes:1128  
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                  D14F     
+ breast (female)-99 :2236  
+ breast (female)-no :2123  
+ breast (female)-yes: 678  
+                           
+                           
+                           
+                           
+> ?summary
+starting httpd help server ... done
+> summary(base,maxsum=100)
+     Sex                     SKOLA                  Prihodi           MAT_STAN   
+ female:3057   faculty_PhD_MSc  : 523   (1000_1500)     :576   average    :2479  
+ male  :1980   grammar_school   :1930   (1500_2000)     :507   low        :1069  
+               handicraft_school: 612   (2000_2500)     :524   overaverage: 608  
+               high_school      : 334   (2500_3000)     :511   unknown    :  21  
+               no_school        : 631   (3000_3500)     :397   verylow    : 860  
+               primary_school   :1007   (3500_4000)     :436                     
+                                        (4000_5000)     :540                     
+                                        (5000_6000)     :349                     
+                                        (more than 6000):468                     
+                                        to 1000 Kn)     :652                     
+                                        unknown         : 77                     
+                                                                                 
+                                                                                 
+                                                                                 
+                B1                      B2                        B3      
+ health_excellent: 472   betterothers    : 928   better last y     : 492  
+ health_fair     :1322   eqaulothers     :2791   equal last y      :2705  
+ health_good     :1367   muchbetterothers: 257   much better last y: 246  
+ health_poor     :1043   muchworseothers : 217   much worse last y : 433  
+ health_very good: 833   unknownothers   :   4   worse last y      :1161  
+                         worseothers     : 840                            
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                   B41                         B42                         B43      
+ hard phy_limited a  :1215   mod phy_ limited a  :1296   groc_ not at all    :2912  
+ hard phy_much limite:1819   mod phy_ not at all :2737   groc_limited a littl:1241  
+ hard phy_not at all :2003   mod phy_much limited:1004   groc_much limited   : 884  
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                   B44                       B45                         B46      
+ climstairs_lim_littl:1294   clim1_limited     :1053   bending_lim a littl :1371  
+ climstairs_much limt:1168   clim1_much limited: 790   bending_much limited:1098  
+ climstairs_notat all:2575   clim1_not at all  :3194   bending_not at all  :2568  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                   B47                         B48                         B49      
+ walk1km_limited     : 985   walkseg_limited     : 863   walk1block_limited  : 688  
+ walk1km_much limited:1112   walkseg_much limited: 799   walk1block_much lim : 603  
+ walk1km_not at all  :2940   walkseg_not at all  :3375   walk1block_notat all:3746  
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                 B410                       B51                         B52      
+ dress_limited     : 585   health_cut work_no :3363   health_would like_no:3001  
+ dress_much limited: 574   health_cut work_yes:1674   health_wouldlike_yes:2036  
+ dress_no at all   :3878                                                         
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                   B53                         B54                      B61      
+ limited_kindwork_yes:1754   health_diff work_no :3047   emot cut work_no :3816  
+ limited_king work_no:3283   health_diff work_yes:1990   emot cut work_yes:1221  
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                   B62                         B63                         B7      
+ emot less_w.like_no :3528   emot_work careful_no:3600   soc act_extremly   : 172  
+ emot less_w.like_yes:1509   emot_workcareful_yes:1437   soc act_moderately : 768  
+                                                         soc act_not at all :2518  
+                                                         soc act_quite a bit: 508  
+                                                         soc act_slightely  :1071  
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                    B8                          B9                        B10_1     
+ bodily pain_mild    : 803   pain act_extremly   : 341   full pep_ none time : 381  
+ bodily pain_moderate:1243   pain act_little bit :1115   full pep_all time   : 415  
+ bodily pain_none    :1371   pain act_moderate   : 758   full pep_good time  :1111  
+ bodily pain_severe  : 676   pain act_not at all :2070   full pep_little time: 914  
+ bodily pain_very sev: 213   pain act_quite a bit: 753   full pep_most time  : 683  
+ bodily pain_verymild: 731                               full pep_some time  :1533  
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                 B10_2                       B10_3                   B10_4     
+ mervous_good time  : 706   felt down_all time  : 122   calm_all time   : 314  
+ nervous_all time   : 184   felt down_good time : 415   calm_good time  :1403  
+ nervous_little time:1343   felt down_little tim:1425   calm_little time: 970  
+ nervous_most time  : 332   felt down_most time : 209   calm_most time  : 748  
+ nervous_none time  : 528   felt down_none time :1811   calm_none time  : 251  
+ nervous_some time  :1944   felt down_some time :1055   calm_some time  :1351  
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                  B10_5                       B10_6                       B10_7     
+ lot energy_all time : 480   down heart_all time : 131   worn out_all time   : 264  
+ lot energy_good time: 988   down heart_good time: 482   worn out_good time  : 927  
+ lot energy_little t :1070   down heart_little t :1701   worn out_little time:1048  
+ lot energy_most time: 721   down heart_most time: 254   worn out_most time  : 438  
+ lot energy_none time: 454   down heart_none time:1071   worn out_none time  : 524  
+ lot energy_some time:1324   down heart_some time:1398   worn out_some time  :1836  
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                    
+               B10_8                    B10_9                        B11      
+ happy_all time   : 443   tired_all time   : 350   probl life_all time : 241  
+ happy_good time  :1261   tired_good time  : 918   probl life_little t :1214  
+ happy_little time: 735   tired_little time: 830   probl life_most time: 408  
+ happy_most time  : 827   tired_most time  : 509   probl life_none time:1832  
+ happy_none time  : 230   tired_none time  : 281   probl life_some time:1342  
+ happy_some time  :1541   tired_some time  :2149                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                  B12_1                       B12_2                      B12_3     
+ sick easy_def. false:1401   healthy_def. false  : 401   expect_def_ false  : 958  
+ sick easy_def. true : 262   healthy_def. true   : 580   expect_def.true    : 381  
+ sick easy_don't know:1350   healthy_don't know  :1372   expect_don't know  :1977  
+ sick easy_mostly fal:1380   healthy_mostly false: 864   expect_mostly false: 767  
+ sick easy_mostly tru: 644   healthy_mostly true :1820   expect_mostly true : 954  
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                                                                                   
+                  B12_4      Edad_classe                  Sexo_edad        Edad      
+ excellent_def.false : 979   18_25 a\xf1os      :639   f(18_25):381   Min.   :18.00  
+ excellent_def.true  : 602   26_35 a\xf1os      :833   f(26_35):487   1st Qu.:33.00  
+ excellent_don't know: 580   36_45 a\xf1os      :766   f(36-45):474   Median :49.00  
+ excellent_mostly fal:1185   46_55 a\xf1os      :794   f(46_55):489   Mean   :49.09  
+ excellent_mostly t  :1691   56_65 a\xf1os      :798   f(56_65):472   3rd Qu.:65.00  
+                             66_75 a\xf1os      :818   f(66_75):501   Max.   :94.00  
+                             76 y m\xe1s a\xf1os:389   f(76+)  :253                  
+                                                       m(18_25):258                  
+                                                       m(26_35):346                  
+                                                       m(36_45):292                  
+                                                       m(46_55):305                  
+                                                       m(56_65):326                  
+                                                       m(66_75):317                  
+                                                       m(76+)  :136                  
+   PF_Phisica       RP_Role.li    RE_Role.li       SF_Social       MH_Mental     
+ Min.   :  0.00   Min.   :  0   Min.   :  0.00   Min.   : 0.00   Min.   :  0.00  
+ 1st Qu.: 45.00   1st Qu.: 25   1st Qu.: 33.33   1st Qu.:44.44   1st Qu.: 48.00  
+ Median : 80.00   Median :100   Median :100.00   Median :66.67   Median : 64.00  
+ Mean   : 69.93   Mean   : 63   Mean   : 72.42   Mean   :64.83   Mean   : 61.69  
+ 3rd Qu.:100.00   3rd Qu.:100   3rd Qu.:100.00   3rd Qu.:88.89   3rd Qu.: 76.00  
+ Max.   :100.00   Max.   :100   Max.   :100.00   Max.   :88.89   Max.   :100.00  
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+   EV_Energy          P_Pain         HP_General                     C9      
+ Min.   :  0.00   Min.   :  0.00   Min.   :  0.00   smoking-no       :3288  
+ 1st Qu.: 35.00   1st Qu.: 44.44   1st Qu.: 35.00   smoking-sometimes: 421  
+ Median : 55.00   Median : 66.67   Median : 57.00   smoking-unknown  :  12  
+ Mean   : 51.83   Mean   : 64.51   Mean   : 54.26   smoking-yes      :1316  
+ 3rd Qu.: 65.00   3rd Qu.:100.00   3rd Qu.: 72.00                           
+ Max.   :100.00   Max.   :100.00   Max.   :100.00                           
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                 C10                         C11         C13                     
+ cigarettes-20 more: 616   ever smoked-99      : 558   alcohol-1\xf32 week: 536  
+ cigarettes-99     : 535   ever smoked-no      :2167   alcohol-99         :  27  
+ cigarettes-less 20:1128   ever smoked-sometime: 704   alcohol-every day  : 883  
+ cigarettes-none   :2758   ever smoked-yes     :1608   alcohol-never      :1004  
+                                                       alcohol-not now    : 386  
+                                                       alcohol-sometime   : 946  
+                                                       alcohol-very rarely:1255  
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+                                                                                 
+           C14                C15           C16VIS          C16TEZ          C17S_KT     
+ drink-99    :1394   act-jogging: 836   Min.   :120.0   Min.   : 20.00   Min.   : 80.0  
+ drink-beer  :1094   act-reading:2260   1st Qu.:164.0   1st Qu.: 63.00   1st Qu.:120.0  
+ drink-spirit: 466   act-sport  : 184   Median :170.0   Median : 73.00   Median :130.0  
+ drink-wine  :2083   act-unknown: 215   Mean   :170.1   Mean   : 73.98   Mean   :136.5  
+                     act-walking:1542   3rd Qu.:176.0   3rd Qu.: 84.00   3rd Qu.:150.0  
+                                        Max.   :200.0   Max.   :140.00   Max.   :240.0  
+                                        NA's   :76      NA's   :33       NA's   :637    
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+    C17D_KT           D1A          D1AKOLIK                   D1B          D1BKOLIK     
+ Min.   : 45.00   GP-99 :  72   Min.   :  0.000   specialist-99 : 273   Min.   : 0.000  
+ 1st Qu.: 80.00   GP-no :1018   1st Qu.:  1.000   specialist-no :2237   1st Qu.: 0.000  
+ Median : 80.00   GP-yes:3947   Median :  2.000   specialist-yes:2527   Median : 1.000  
+ Mean   : 83.82                 Mean   :  4.766                         Mean   : 1.733  
+ 3rd Qu.: 90.00                 3rd Qu.:  6.000                         3rd Qu.: 2.000  
+ Max.   :150.00                 Max.   :180.000                         Max.   :70.000  
+ NA's   :637                    NA's   :257                             NA's   :392     
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+           D1C          D1CKOLIK              D3          D3KOLIKO                     D4      
+ dentisit-99 : 279   Min.   : 0.000   0        :  39   Min.   : 0.0000   any recipes-no :1342  
+ dentisit-yes:2182   1st Qu.: 0.000   nurce-no :4639   1st Qu.: 0.0000   any recipes-yes:3661  
+ dentist-no  :2576   Median : 0.000   nurce-yes: 359   Median : 0.0000   any recipes99  :  34  
+                     Mean   : 1.518                    Mean   : 0.4007                         
+                     3rd Qu.: 2.000                    3rd Qu.: 0.0000                         
+                     Max.   :52.000                    Max.   :72.0000                         
+                     NA's   :374                       NA's   :31                              
+                                                                                               
+                                                                                               
+                                                                                               
+                                                                                               
+                                                                                               
+                                                                                               
+                                                                                               
+    D4KOLIKO                          D5                          D6      
+ Min.   :  0.000   should drug-no      : 289   explain drug-no     : 295  
+ 1st Qu.:  0.000   should drug-unknownn: 187   explain drug-unknown: 158  
+ Median :  2.000   should drug-yes     :4561   explain drug-yes    :4584  
+ Mean   :  5.484                                                          
+ 3rd Qu.:  5.000                                                          
+ Max.   :150.000                                                          
+ NA's   :373                                                              
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+               D13          D13KOLIK                    D14A                   D14B     
+ hospitalized-99 :  61   Min.   :  0.000   measured BP-99 : 135   blood/urine-99 : 251  
+ hospitalized-no :4266   1st Qu.:  0.000   measured BP-no :1053   blood/urine-no :1905  
+ hospitalized-yes: 710   Median :  0.000   measured BP-yes:3849   blood/urine-yes:2881  
+                         Mean   :  2.107                                                
+                         3rd Qu.:  0.000                                                
+                         Max.   :150.000                                                
+                         NA's   :87                                                     
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                                                                                        
+                D14C                    D14D                        D14E     
+ control teeth-99 : 295   control lung-99 : 500   PAP test(female)-99 :2175  
+ control teeth-no :2458   control lung-no :3307   PAP test(female)-no :1734  
+ control teeth-yes:2284   control lung-yes:1230   PAP test(female)-yes:1128  
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                                                                             
+                  D14F     
+ breast (female)-99 :2236  
+ breast (female)-no :2123  
+ breast (female)-yes: 678  
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+> summary(base$Sex)
+female   male 
+  3057   1980 
+> 
+> 
+> # ordenar los niveles de las variables categóricas e indicar que serán
+> # consideradas como factores (si hace falta)
+> summary(base$SKOLA)
+  faculty_PhD_MSc    grammar_school handicraft_school       high_school         no_school 
+              523              1930               612               334               631 
+   primary_school 
+             1007 
+> base$SKOLA<-factor(base$SKOLA,levels=c("no_school","primary_school","handicraft_school",
++                   "grammar_school","high_school","faculty_PhD_MSc"))
+> 
+> summary(base$B1)
+health_excellent      health_fair      health_good      health_poor health_very good 
+             472             1322             1367             1043              833 
+> base$B1<-factor(B1,levels=c("health_excellent","health_very good","health_good","health_fair","health_poor" ))
+Error en factor(B1, levels = c("health_excellent", "health_very good",  : 
+  objeto 'B1' no encontrado
+> summary(base$B1)
+health_excellent      health_fair      health_good      health_poor health_very good 
+             472             1322             1367             1043              833 
+> #...hacer lo mismo para las otras variables categóricas   Imperativo!
+> # no cambia los resultados pero facilita la lectura y el manejo de ciertos comandos
+> 
+> summary(base[,1:3],maxsum=100)
+     Sex                     SKOLA                  Prihodi   
+ female:3057   no_school        : 631   (1000_1500)     :576  
+ male  :1980   primary_school   :1007   (1500_2000)     :507  
+               handicraft_school: 612   (2000_2500)     :524  
+               grammar_school   :1930   (2500_3000)     :511  
+               high_school      : 334   (3000_3500)     :397  
+               faculty_PhD_MSc  : 523   (3500_4000)     :436  
+                                        (4000_5000)     :540  
+                                        (5000_6000)     :349  
+                                        (more than 6000):468  
+                                        to 1000 Kn)     :652  
+                                        unknown         : 77  
+> summary(base[,4:13])
+        MAT_STAN                   B1                      B2                        B3      
+ average    :2479   health_excellent: 472   betterothers    : 928   better last y     : 492  
+ low        :1069   health_fair     :1322   eqaulothers     :2791   equal last y      :2705  
+ overaverage: 608   health_good     :1367   muchbetterothers: 257   much better last y: 246  
+ unknown    :  21   health_poor     :1043   muchworseothers : 217   much worse last y : 433  
+ verylow    : 860   health_very good: 833   unknownothers   :   4   worse last y      :1161  
+                                            worseothers     : 840                            
+                   B41                         B42                         B43      
+ hard phy_limited a  :1215   mod phy_ limited a  :1296   groc_ not at all    :2912  
+ hard phy_much limite:1819   mod phy_ not at all :2737   groc_limited a littl:1241  
+ hard phy_not at all :2003   mod phy_much limited:1004   groc_much limited   : 884  
+                                                                                    
+                                                                                    
+                                                                                    
+                   B44                       B45                         B46      
+ climstairs_lim_littl:1294   clim1_limited     :1053   bending_lim a littl :1371  
+ climstairs_much limt:1168   clim1_much limited: 790   bending_much limited:1098  
+ climstairs_notat all:2575   clim1_not at all  :3194   bending_not at all  :2568  
+                                                                                  
+                                                                                  
+                                                                                  
+> 
+> 
+> # Crear una nueva variable cruzando nivel de estudios y edad_en_clases
+> SKOLAbis<-base$SKOLA
+> levels(SKOLAbis)<-c("faculty-high-school","faculty-high-school","gram-handi-school","gram-handi-school","primary-no-school","primary-no-school")          
+> summary(SKOLAbis)
+faculty-high-school   gram-handi-school   primary-no-school 
+               1638                2542                 857 
+> Edadcla<-base$Edad_classe
+> summary(Edadcla)
+      18_25 a\xf1os       26_35 a\xf1os       36_45 a\xf1os       46_55 a\xf1os 
+                639                 833                 766                 794 
+      56_65 a\xf1os       66_75 a\xf1os 76 y m\xe1s a\xf1os 
+                798                 818                 389 
+> levels(Edadcla)<-c("18-35 años","18-35 años","36-55 años","36-55 años","56 y más","56 y más","56 y más")
+> summary(Edadcla)
+18-35 años 36-55 años   56 y más 
+      1472       1560       2005 
+> 
+> JovHigh<-which((Edadcla=="18-35 años") & (SKOLAbis=="faculty-high-school"))
+> JovHigh
+  [1]   12   46   53  116  120  137  153  264  265  267  269  277  279  282  293  316  320  328
+ [19]  336  341  357  360  379  400  408  410  415  426  438  448  451  479  483  491  503  603
+ [37]  654  686  709  735  744  745  747  771  802  830  834  835  846  850  904  908  910  939
+ [55] 1028 1080 1170 1177 1186 1276 1287 1392 1393 1397 1398 1404 1406 1411 1414 1420 1422 1423
+ [73] 1428 1429 1434 1440 1442 1448 1450 1451 1452 1454 1461 1464 1465 1468 1469 1471 1502 1565
+ [91] 1588 1594 1648 1651 1672 1678 1745 1752 1849 1884 1921 2012 2046 2113 2182 2226 2446 2478
+[109] 2502 2525 2531 2579 2709 2729 2897 2923 2967 3117 3362 3363 3388 3397 3420 3432 3442 3453
+[127] 3459 3500 3517 3535 3544 3547 3548 3586 3588 3619 3647 3651 3689 3768 3782 3808 3816 3836
+[145] 3875 3876 3888 4065 4094 4121 4128 4129 4130 4147 4154 4239 4241 4270 4271 4305 4309 4346
+[163] 4350 4362 4378 4399 4436 4443 4479 4487 4517 4532 4538 4539 4593 4603 4632 4641 4652 4669
+[181] 4769 4779 4845 4850 4872 4879 4886 4903 4923 5015 5037
+> JovMedium<-which((Edadcla=="18-35 años") & (SKOLAbis=="gram-handi-school"))
+> JovLow<-which((Edadcla=="18-35 años") & (SKOLAbis=="primary-no-school"))
+> MidHigh<-which((Edadcla=="36-55 años") & (SKOLAbis=="faculty-high-school"))
+> MidMedium<-which((Edadcla=="36-55 años") & (SKOLAbis=="gram-handi-school"))
+> MidLow<-which((Edadcla=="36-55 años") & (SKOLAbis=="primary-no-school"))
+> OldHigh<-which((Edadcla=="56 y más") & (SKOLAbis=="faculty-high-school"))
+> OldMedium<-which((Edadcla=="56 y más") & (SKOLAbis=="gram-handi-school"))
+> OldLow<-which((Edadcla=="56 y más") & (SKOLAbis=="primary-no-school"))
+> Edad_Skol<-factor()
+> levels(Edad_Skol)<-c("JovHigh","JovMedium","JovLow","MidHigh","MidMedium","MidLow","OldHigh","OldMedium","OldLow")
+> Edad_Skol[JovHigh]<-"JovHigh"
+> Edad_Skol[JovMedium]<-"JovMedium"
+> Edad_Skol[JovLow]<-"JovLow"
+> Edad_Skol[MidHigh]<-"MidHigh"
+> Edad_Skol[MidMedium]<-"MidMedium"
+> Edad_Skol[MidLow]<-"MidLow"
+> Edad_Skol[OldHigh]<-"OldHigh"
+> Edad_Skol[OldMedium]<-"OldMedium"
+> Edad_Skol[OldLow]<-"OldLow"
+> summary(Edad_Skol)
+  JovHigh JovMedium    JovLow   MidHigh MidMedium    MidLow   OldHigh OldMedium    OldLow 
+      191      1024       257       346       841       373      1101       677       227 
+> 
+> 
+> #  Profiling  =============================================================================================================
+> 
+> 
+> #### Describir variables privilegiadas (cuantitativas o cualitativas)
+> summary(base[,52])
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00   35.00   57.00   54.26   72.00  100.00 
+> condes(base,num.var=52)   # caracterizar el score global de salud
+$quanti
+           correlation       p.value
+EV_Energy   0.65199669  0.000000e+00
+P_Pain      0.59827064  0.000000e+00
+MH_Mental   0.56762477  0.000000e+00
+RP_Role.li  0.55883584  0.000000e+00
+SF_Social   0.54834888  0.000000e+00
+PF_Phisica  0.53513955  0.000000e+00
+RE_Role.li  0.38636083 5.106648e-179
+C16VIS      0.18668289  3.828331e-40
+D1CKOLIK    0.12162709  7.803883e-17
+C16TEZ     -0.07818645  3.060765e-08
+D3KOLIKO   -0.10827554  1.572268e-14
+Edad       -0.14367314  1.215461e-24
+D1BKOLIK   -0.17859073  1.359029e-34
+D13KOLIK   -0.19084417  8.098868e-42
+C17D_KT    -0.24177199  1.489943e-59
+D1AKOLIK   -0.33329117 2.334420e-124
+C17S_KT    -0.33674624 4.051446e-117
+D4KOLIKO   -0.36670359 2.021028e-148
+
+$quali
+                     R2       p.value
+B1          0.659160931  0.000000e+00
+B2          0.331745718  0.000000e+00
+B41         0.271772917  0.000000e+00
+B54         0.279174660  0.000000e+00
+B8          0.312906564  0.000000e+00
+B9          0.334878330  0.000000e+00
+B10_1       0.312852504  0.000000e+00
+B10_5       0.332377621  0.000000e+00
+B10_7       0.261115541  0.000000e+00
+B10_8       0.259845334  0.000000e+00
+B10_9       0.273629101  0.000000e+00
+B11         0.281510914  0.000000e+00
+B12_1       0.471184690  0.000000e+00
+B12_2       0.493619418  0.000000e+00
+B12_3       0.462634754  0.000000e+00
+B12_4       0.715269873  0.000000e+00
+B44         0.246820311 1.424874e-310
+B53         0.243062611 7.784576e-307
+B42         0.242784341 9.901469e-305
+B52         0.237993156 1.562502e-299
+B10_6       0.236147772 5.600871e-291
+Sexo_edad   0.237841715 3.737627e-284
+Edad_classe 0.232132664 5.345100e-284
+B10_3       0.228261601 8.855415e-280
+B51         0.222249565 3.694521e-277
+B43         0.222081576 3.027071e-275
+B47         0.213757217 1.306602e-263
+B3          0.215350362 5.481708e-263
+B46         0.211008822 8.523054e-260
+B7          0.212092001 1.821505e-258
+B45         0.204191116 2.166239e-250
+B48         0.181425857 1.469069e-219
+B10_4       0.170546819 3.528694e-201
+B10_2       0.151660687 1.167326e-176
+B49         0.142836148 3.324333e-169
+B62         0.127641010 1.576180e-151
+B61         0.125234797 1.634197e-148
+SKOLA       0.120267569 4.108464e-137
+B410        0.115397979 9.215809e-135
+B63         0.114019935 1.450628e-134
+Prihodi     0.114771833 2.610665e-125
+MAT_STAN    0.109550457 4.559686e-125
+D4          0.098241230 9.172187e-114
+C15         0.097890618 6.688935e-111
+D1A         0.054427828  6.660632e-62
+D1B         0.053979645  2.195386e-61
+D14A        0.053580370  6.349984e-61
+D14B        0.049557560  2.749734e-56
+D13         0.040455471  7.210092e-46
+C13         0.043087453  4.684231e-45
+D14C        0.036124206  6.040081e-41
+D14D        0.035100730  8.732490e-40
+D1C         0.031181527  2.355858e-35
+C14         0.025282218  9.361349e-28
+C9          0.020423692  2.290227e-22
+C10         0.019700789  1.440258e-21
+D3          0.015218428  1.724097e-17
+D14E        0.012273431  3.167118e-14
+C11         0.009202814  4.360575e-10
+D5          0.007180586  1.325703e-08
+Sex         0.006042133  3.319123e-08
+D6          0.005933083  3.126921e-07
+D14F        0.002864417  7.317420e-04
+
+$category
+                        Estimate       p.value
+sick easy_def. false  27.4563978  0.000000e+00
+health_diff work_no   12.4261896  0.000000e+00
+limited_king work_no  11.8979349 7.784576e-307
+expect_def_ false     26.5285746 2.448465e-302
+health_would like_no  11.4293911 1.562502e-299
+pain act_not at all   20.7540283 1.920749e-293
+mod phy_ not at all   15.0686496 9.664906e-287
+climstairs_notat all  14.6549868 3.316317e-278
+health_cut work_no    11.5064682 3.694521e-277
+groc_ not at all      14.7481731 2.243082e-270
+excellent_mostly t    14.3158789 3.951701e-265
+excellent_def.true    28.0624157 4.988913e-262
+clim1_not at all      14.4121858 6.346610e-252
+walk1km_not at all    13.6466010 3.152688e-243
+bending_not at all    13.9144870 4.393348e-243
+hard phy_not at all   12.3842782 6.719675e-229
+walkseg_not at all    13.8871340 3.507617e-221
+probl life_none time  20.2662259 4.669010e-206
+healthy_def. true     29.6463621 8.171414e-206
+health_excellent      25.4230843 2.202180e-205
+bodily pain_none      19.2517837 1.423148e-197
+soc act_not at all    18.0866347 3.758544e-182
+health_very good      16.0924079 5.296333e-182
+emot less_w.like_no    8.9670368 1.576180e-151
+walk1block_notat all  12.2903084 2.336307e-151
+felt down_none time   20.9621491 1.608218e-148
+emot cut work_no       9.4943063 1.634197e-148
+healthy_mostly true   13.8926486 6.571945e-140
+equal last y          10.9192354 1.089776e-139
+emot_work careful_no   8.5975261 1.450628e-134
+any recipes-no        10.8617102 3.118951e-115
+dress_no at all       11.2152079 5.814879e-112
+down heart_none time  20.6824835  4.168783e-90
+18_25 a\xf1os         17.0846084  1.497203e-86
+tired_little time     16.3734257  3.334253e-82
+happy_most time       15.1113345  2.520943e-77
+full pep_most time    15.0582585  8.959228e-77
+lot energy_all time   17.7224678  3.572851e-75
+lot energy_most time  14.0084855  3.903693e-75
+26_35 a\xf1os         13.6718424  5.432146e-74
+worn out_little time  15.4893376  3.169399e-73
+calm_most time        12.5498005  9.413566e-62
+GP-no                  5.4646867  3.817070e-60
+measured BP-no         6.0761778  7.554251e-59
+worn out_none time    19.4072766  8.637499e-59
+full pep_all time     17.0101821  3.504259e-56
+full pep_good time     9.6403189  3.723082e-56
+down heart_little t   15.3966308  3.177519e-55
+grammar_school         7.1027816  1.297164e-52
+nervous_little time   12.8837237  8.876209e-52
+specialist-no          3.6382617  6.038602e-51
+eqaulothers            5.6476088  2.740036e-49
+betterothers          11.3166323  7.101177e-49
+happy_all time        16.7750432  4.610943e-48
+lot energy_good time   9.1284648  9.966540e-48
+blood/urine-no         3.6013825  1.145161e-47
+hospitalized-no        5.7155763  5.511027e-45
+m(18_25)              19.4329198  1.274298e-43
+health_good            3.2253328  3.667810e-43
+control teeth-yes      6.4355739  1.563105e-41
+muchbetterothers      20.0493364  2.635087e-41
+tired_none time       19.9044894  4.329306e-39
+f(18_25)              14.9234588  9.593691e-39
+dentisit-yes           5.2593276  1.681406e-36
+felt down_some time    2.2453348  2.873317e-36
+f(26_35)              12.6394445  3.661636e-36
+average                4.4361799  1.884633e-35
+bodily pain_verymild  13.4843797  1.204113e-33
+expect_mostly false   12.4525593  1.450679e-33
+overaverage           10.8573248  1.536823e-33
+nervous_none time     16.1251058  3.413920e-33
+tired_some time        7.0878123  3.809886e-33
+happy_good time        8.3221295  2.654203e-32
+m(26_35)              14.3053713  3.073100e-32
+down heart_some time   2.3592065  4.693078e-31
+act-jogging            3.6278004  3.637659e-29
+act-sport             13.6940580  4.966551e-28
+control lung-no        3.5828291  1.749916e-27
+calm_all time         13.4065310  2.117113e-27
+calm_good time         5.3367896  4.223252e-26
+(more than 6000)       9.2931661  1.574203e-24
+faculty_PhD_MSc        9.8857417  2.481888e-21
+sick easy_mostly fal  12.4253703  3.442660e-18
+cigarettes-less 20     4.5114851  7.019984e-18
+nurce-no               4.4722149  1.946167e-17
+(3500_4000)            6.5614755  5.793161e-13
+much better last y    13.5882660  2.302646e-12
+smoking-yes            1.5405776  2.908363e-12
+dress_much limited     1.1470120  6.995248e-12
+(5000_6000)            7.0721745  9.389064e-12
+(4000_5000)            5.0904595  6.537824e-11
+worn out_some time     6.9830470  1.122516e-10
+36_45 a\xf1os          5.5281703  1.526380e-10
+probl life_little t   11.3304008  3.351309e-10
+should drug-unknownn   6.8938185  1.711076e-09
+smoking-sometimes      4.1622574  2.087336e-09
+drink-spirit           4.7534212  8.008456e-09
+alcohol-very rarely    4.2419585  3.033263e-08
+male                   1.8296902  3.319123e-08
+explain drug-unknown   6.5564141  4.959228e-08
+drink-beer             2.2271601  6.590166e-08
+felt down_little tim  12.7925934  1.757200e-07
+PAP test(female)-yes   2.7427970  6.657053e-07
+ever smoked-sometime   2.6587434  2.612804e-06
+m(36_45)               6.1946539  6.236503e-06
+hard phy_limited a     2.6011435  1.827653e-05
+f(36-45)               4.5674503  2.139603e-05
+alcohol-sometime       3.9525436  2.772213e-05
+blood/urine-99         3.1892442  8.616869e-05
+specialist-99          3.4305267  1.305053e-04
+breast (female)-99     1.4023368  2.617166e-04
+(3000_3500)            2.4969433  1.567810e-03
+cigarettes-20 more     2.0642391  1.650525e-03
+PAP test(female)-99    0.8848843  2.205856e-03
+alcohol-1\xf32 week    3.9181017  2.979327e-03
+pain act_little bit    9.2402050  3.120299e-03
+high_school            4.2111959  6.416614e-03
+GP-99                  2.2777733  7.377772e-03
+ever smoked-99         1.2763051  9.173327e-03
+measured BP-99         0.8355320  1.346415e-02
+alcohol-every day      2.8488753  1.445772e-02
+(2500_3000)            0.9425506  4.348365e-02
+dentisit-99           -2.2587086  3.151581e-02
+lot energy_some time  -1.5708668  1.863170e-02
+(2000_2500)           -3.4004791  1.172856e-02
+(1500_2000)           -3.8072613  3.795395e-03
+46_55 a\xf1os         -1.5603855  3.319186e-03
+cigarettes-99         -3.7869655  8.962878e-04
+breast (female)-no    -1.2361911  5.275150e-04
+explain drug-yes      -3.6059199  4.515522e-04
+f(46_55)              -3.2526036  3.243871e-04
+should drug-yes       -3.4066996  3.050741e-04
+control teeth-99      -4.4194529  2.652323e-06
+full pep_some time    -2.3576343  3.331394e-07
+female                -1.8296902  3.319123e-08
+m(56_65)              -7.0613970  2.169806e-09
+ever smoked-no        -3.3514594  1.890714e-09
+alcohol-never         -3.2666073  1.160834e-11
+low                   -3.9064501  6.150921e-12
+m(76+)               -13.5177756  1.082310e-12
+m(66_75)              -8.5972198  9.934694e-13
+cigarettes-none       -2.7887588  5.086571e-13
+calm_some time        -4.0845514  1.573353e-13
+PAP test(female)-no   -3.6276814  3.802339e-14
+healthy_don't know    -0.6607154  2.106185e-14
+act-walking           -0.2960029  9.738529e-18
+(1000_1500)           -8.8208831  3.332226e-18
+nurce-yes             -6.5429784  1.912921e-18
+walk1block_much lim   -0.5090747  7.699389e-20
+calm_none time       -14.0462058  5.537057e-23
+smoking-no            -4.6000489  2.050997e-23
+drink-99              -6.3725201  3.997999e-24
+happy_some time       -3.3093718  2.917139e-25
+f(56_65)             -10.2268982  8.603096e-26
+f(76+)               -15.2904157  8.966663e-29
+control teeth-no      -2.0161210  4.558474e-29
+walk1km_limited       -2.3065310  3.994739e-29
+primary_school        -6.3726067  1.548459e-29
+climstairs_lim_littl  -2.2439565  1.842602e-30
+dentist-no            -3.0006190  1.302058e-30
+alcohol-not now      -12.2274014  5.841656e-33
+mervous_good time     -5.0790051  1.383663e-35
+56_65 a\xf1os         -8.5932953  1.308919e-35
+felt down_all time   -15.6959829  1.252479e-36
+nervous_all time     -16.4042915  6.758367e-38
+down heart_all time  -17.6189684  6.498431e-40
+bending_lim a littl   -3.1373512  7.873632e-41
+control lung-yes      -6.5200731  6.119721e-41
+pain act_moderate     -2.8225232  2.906081e-41
+76 y m\xe1s a\xf1os  -14.3302469  1.961984e-41
+soc act_moderately    -1.2698786  6.059560e-43
+tired_good time       -6.9676642  4.040622e-45
+nervous_most time    -12.2754282  1.445446e-45
+hospitalized-yes      -7.5745395  9.523605e-47
+bodily pain_very sev -17.8821065  8.832640e-47
+soc act_extremly     -15.7985547  2.202169e-48
+felt down_most time  -12.9143922  1.795264e-50
+down heart_most time -12.7444117  3.958121e-52
+health_fair          -12.1801556  3.929843e-52
+f(66_75)             -14.3834707  2.240064e-52
+happy_none time      -20.8406502  1.270876e-53
+sick easy_don't know  -0.3183012  8.514109e-54
+mod phy_ limited a    -3.5111843  6.186370e-55
+bodily pain_moderate  -4.7318000  1.759447e-55
+worn out_good time    -6.4302935  2.443232e-56
+blood/urine-yes       -6.7906267  1.400593e-57
+felt down_good time   -7.3897021  2.300159e-60
+measured BP-yes       -6.9117097  8.041357e-61
+worse last y          -6.1457627  2.912687e-62
+tired_most time      -13.2931069  1.687299e-62
+specialist-yes        -7.0687884  1.040732e-62
+GP-yes                -7.7424600  6.171263e-63
+down heart_good time  -8.0749407  6.069424e-63
+probl life_all time  -16.2738907  1.363036e-63
+66_75 a\xf1os        -11.8006933  6.409913e-66
+to 1000 Kn)          -15.6138918  9.647326e-70
+no_school            -14.2921635  1.239798e-72
+worn out_all time    -20.4938049  2.541319e-74
+probl life_some time  -1.9254420  2.324231e-74
+worn out_most time   -14.9555628  4.400358e-77
+groc_limited a littl  -4.9202110  1.978183e-79
+walkseg_much limited  -6.9612361  5.075432e-81
+clim1_much limited    -7.5662033  3.162542e-81
+soc act_quite a bit   -9.2755278  1.244553e-83
+probl life_most time -13.3972940  1.309861e-86
+verylow              -13.4516945  1.025997e-86
+walkseg_limited       -6.9258979  1.597839e-88
+calm_little time     -13.1623639  4.580938e-89
+pain act_extremly    -16.5882132  1.744991e-92
+act-reading          -11.7006515  5.622382e-94
+full pep_ none time  -22.9462799  2.967301e-96
+excellent_mostly fal -12.6318678  9.356804e-98
+clim1_limited         -6.8459826 1.910540e-104
+muchworseothers      -31.1376671 1.830810e-105
+tired_all time       -23.1049564 2.173894e-109
+any recipes-yes       -5.4410500 3.135309e-111
+groc_much limited     -9.8279622 3.899444e-112
+dress_limited        -12.3622199 5.859450e-113
+happy_little time    -16.0584852 3.820001e-120
+pain act_quite a bit -10.5834969 3.331789e-127
+lot energy_none time -24.3671522 7.489613e-128
+lot energy_little t  -14.9213990 1.490765e-128
+bodily pain_severe   -15.2645133 9.475795e-129
+walk1block_limited   -11.7812338 1.064198e-130
+bending_much limited -10.7771358 7.869282e-134
+emot_workcareful_yes  -8.5975261 1.450628e-134
+full pep_little time -16.4048452 1.751255e-135
+sick easy_def. true  -25.8139925 4.796200e-139
+much worse last y    -22.4439070 1.461314e-142
+emot cut work_yes     -9.4943063 1.634197e-148
+emot less_w.like_yes  -8.9670368 1.576180e-151
+mod phy_much limited -11.5574653 5.852569e-153
+expect_mostly true   -13.8194075 1.261388e-153
+sick easy_mostly tru -13.7494744 9.415003e-154
+walk1km_much limited -11.3400700 2.693064e-171
+healthy_mostly false -15.9228429 1.282573e-174
+expect_def.true      -27.8936990 1.498543e-180
+healthy_def. false   -26.9554523 1.324999e-180
+climstairs_much limt -12.4110303 9.950134e-186
+worseothers          -21.0147409 5.048337e-233
+health_cut work_yes  -11.5064682 3.694521e-277
+health_wouldlike_yes -11.4293911 1.562502e-299
+limited_kindwork_yes -11.8979349 7.784576e-307
+excellent_def.false  -30.2711863  0.000000e+00
+health_diff work_yes -12.4261896  0.000000e+00
+hard phy_much limite -14.9854217 4.720556e-309
+health_poor          -32.5606694  0.000000e+00
+
+> 
+> summary(base[,5])
+health_excellent      health_fair      health_good      health_poor health_very good 
+             472             1322             1367             1043              833 
+> catdes(base,num.var=5)   # caracterizar el sexo
+$test.chi2
+                  p.value df
+B2           0.000000e+00 20
+B8           0.000000e+00 20
+B9           0.000000e+00 16
+B12_4        0.000000e+00 16
+B10_1       6.338862e-321 20
+Edad_classe 4.191159e-320 24
+B10_5       4.562202e-320 20
+B41         1.148480e-315  8
+Sexo_edad   1.908590e-313 52
+B44         6.936050e-286  8
+B54         4.231756e-282  4
+B3          1.960673e-277 16
+B42         4.635482e-276  8
+B11         9.037930e-269 16
+B43         3.863355e-253  8
+B12_2       5.214210e-250 16
+B53         2.878889e-248  4
+B10_7       8.876437e-248 20
+B46         1.964824e-245  8
+B10_9       5.572802e-243 20
+B12_3       7.933579e-242 16
+B45         4.287036e-239  8
+B47         3.863593e-237  8
+B51         1.083804e-232  4
+B52         1.449060e-226  4
+B10_8       9.432680e-222 20
+B12_1       2.328342e-220 16
+B48         8.844717e-210  8
+B10_6       1.304037e-206 20
+B7          8.825335e-200 16
+B10_3       8.853421e-188 20
+B49         2.902017e-171  8
+SKOLA       1.249635e-145 20
+MAT_STAN    1.335446e-134 16
+B410        5.342069e-134  8
+B10_4       3.032169e-131 20
+Prihodi     9.102729e-123 40
+B61         3.014514e-116  4
+C15         6.354560e-111 16
+B62         8.860677e-108  4
+B10_2       3.370169e-106 20
+D4           1.040315e-98  8
+B63          3.752983e-94  4
+D1A          1.204167e-57  8
+D14A         2.343543e-55  8
+D1B          4.021829e-55  8
+D14B         8.504105e-51  8
+C13          1.315966e-49 24
+D13          3.112229e-47  8
+D14C         1.001743e-42  8
+D14D         8.972011e-42  8
+D1C          4.090735e-38  8
+C14          1.999547e-30 12
+C10          1.718988e-22 12
+C9           2.936886e-22 12
+D14E         3.218282e-19  8
+D3           6.844414e-16  8
+C11          8.614597e-11 12
+Sex          4.298561e-09  4
+D5           6.067135e-08  8
+D14F         7.101542e-07  8
+D6           1.311082e-05  8
+
+$category
+$category$health_excellent
+                                   Cla/Mod    Mod/Cla    Global       p.value     v.test
+B12_4=excellent_def.true        45.8471761 58.4745763 11.951558 2.433584e-153  26.378263
+B9=pain act_not at all          18.3574879 80.5084746 41.095890  1.421805e-75  18.395712
+B41=hard phy_not at all         18.6220669 79.0254237 39.765734  1.027281e-74  18.288213
+B8=bodily pain_none             21.7359592 63.1355932 27.218582  1.493119e-66  17.233327
+B54=health_diff work_no         14.3419757 92.5847458 60.492357  1.206532e-61  16.567023
+B12_1=sick easy_def. false      20.6995004 61.4406780 27.814175  2.552839e-58  16.099957
+B52=health_would like_no        14.2619127 90.6779661 59.579115  4.680877e-56  15.774228
+B11=probl life_none time        18.1222707 70.3389831 36.370856  5.758677e-56  15.761138
+B46=bending_not at all          15.3037383 83.2627119 50.982728  3.993609e-53  15.342210
+Edad_classe=18_25 a\xf1os       28.3255086 38.3474576 12.686123  1.267480e-51  15.116145
+B44=climstairs_notat all        15.1456311 82.6271186 51.121699  1.524090e-50  14.951444
+B7=soc act_not at all           15.2899126 81.5677966 49.990073  3.081890e-50  14.904483
+B42=mod phy_ not at all         14.6876142 85.1694915 54.337900  3.706271e-50  14.892155
+B53=limited_king work_no        13.3719159 93.0084746 65.177685  4.199659e-50  14.883798
+B12_3=expect_def_ false         23.0688935 46.8220339 19.019257  4.385756e-48  14.569581
+B51=health_cut work_no          13.0538210 93.0084746 66.765932  7.561231e-46  14.213445
+B10_1=full pep_all time         32.7710843 28.8135593  8.239031  2.880606e-45  14.119492
+B43=groc_ not at all            14.0109890 86.4406780 57.812190  4.405498e-45  14.089519
+B10_5=lot energy_all time       30.0000000 30.5084746  9.529482  6.514694e-43  13.732176
+D4=any recipes-no               19.2250373 54.6610169 26.642843  4.670665e-42  13.588738
+B47=walk1km_not at all          13.7074830 85.3813559 58.368076  3.532051e-40  13.268365
+B10_3=felt down_none time       16.5102154 63.3474576 35.953941  5.660753e-37  12.703411
+B12_2=healthy_def. true         25.0000000 30.7203390 11.514791  5.917718e-33  11.957702
+B10_6=down heart_none time      19.6078431 44.4915254 21.262656  6.139996e-33  11.954639
+B3=equal last y                 13.7523105 78.8135593 53.702601  1.628285e-32  11.873343
+B2=muchbetterothers             35.0194553 19.0677966  5.102243  1.159643e-31  11.708014
+B45=clim1_not at all            12.7739512 86.4406780 63.410760  1.786369e-31  11.671317
+Sexo_edad=m(18_25)              34.1085271 18.6440678  5.122096  6.096316e-30  11.367124
+B10_8=happy_most time           20.9189843 36.6525424 16.418503  1.824478e-29  11.271018
+B62=emot less_w.like_no         12.0748299 90.2542373 70.041691  3.122631e-28  11.018193
+D1A=GP-no                       18.8605108 40.6779661 20.210443  6.137619e-27  10.746766
+B48=walkseg_not at all          12.2370370 87.5000000 67.004169  1.001052e-26  10.701536
+B10_7=worn out_none time        23.4732824 26.0593220 10.403018  1.114050e-24  10.255838
+D14A=measured BP-no             17.9487179 40.0423729 20.905301  1.650677e-23   9.992088
+B63=emot_work careful_no        11.7500000 89.6186441 71.471114  1.907658e-23   9.977738
+C15=act-sport                   35.3260870 13.7711864  3.652968  4.984986e-23   9.881957
+B10_8=happy_all time            24.3792325 22.8813559  8.794918  6.933096e-23   9.848853
+B10_1=full pep_most time        20.6442167 29.8728814 13.559659  1.353742e-22   9.781364
+B61=emot cut work_no            11.3731656 91.9491525 75.759381  1.802284e-21   9.515853
+B10_4=calm_most time            19.2513369 30.5084746 14.850109  5.651089e-20   9.150805
+Sexo_edad=f(18_25)              24.4094488 19.7033898  7.564026  1.287340e-19   9.061445
+B10_9=tired_none time           27.4021352 16.3135593  5.578717  2.053138e-19   9.010396
+B10_5=lot energy_most time      19.1400832 29.2372881 14.314076  8.566418e-19   8.852391
+D1B=specialist-no               13.3661153 63.3474576 44.411356  4.243166e-18   8.672075
+MAT_STAN=overaverage            19.9013158 25.6355932 12.070677  1.085630e-17   8.564482
+B10_9=tired_little time         17.9518072 31.5677966 16.478062  1.152638e-17   8.557578
+B10_4=calm_all time             24.8407643 16.5254237  6.233869  6.768411e-17   8.351006
+Edad_classe=26_35 a\xf1os       17.2869148 30.5084746 16.537622  1.855724e-15   7.950625
+B49=walk1block_notat all        11.1318740 88.3474576 74.369664  4.491161e-15   7.840399
+D14B=blood/urine-no             13.4908136 54.4491525 37.820131  1.447940e-14   7.692052
+Sexo_edad=m(26_35)              22.2543353 16.3135593  6.869168  7.976857e-14   7.470701
+B10_2=nervous_little time       14.5197319 41.3135593 26.662696  3.892260e-13   7.259256
+B10_7=worn out_little time      14.8854962 33.0508475 20.806035  6.286749e-11   6.536756
+B410=dress_no at all            10.7271790 88.1355932 76.990272  1.259315e-10   6.432005
+D14C=control teeth-yes          12.2154116 59.1101695 45.344451  3.150366e-10   6.291192
+D13=hospitalized-no             10.3609939 93.6440678 84.693270  5.223783e-10   6.212230
+B10_2=nervous_none time         17.4242424 19.4915254 10.482430  7.603248e-10   6.152997
+SKOLA=grammar_school            12.5906736 51.4830508 38.316458  1.110607e-09   6.092644
+D1C=dentisit-yes                12.1906508 56.3559322 43.319436  2.429882e-09   5.966102
+Sex=male                        12.3232323 51.6949153 39.309113  1.088259e-08   5.716367
+D14D=control lung-no            10.9767161 76.9067797 65.654159  2.729002e-08   5.557989
+Prihodi=(more than 6000)        16.6666667 16.5254237  9.291245  1.596014e-07   5.241124
+D14F=breast (female)-99         11.7620751 55.7203390 44.391503  2.232473e-07   5.178859
+D14E=PAP test(female)-99        11.6321839 53.6016949 43.180465  1.826667e-06   4.771712
+B2=betterothers                 13.1465517 25.8474576 18.423665  2.651313e-05   4.201518
+C10=cigarettes-less 20          12.5886525 30.0847458 22.394282  4.487139e-05   4.080850
+B12_2=healthy_mostly true       11.5934066 44.7033898 36.132619  5.849153e-05   4.018815
+C14=drink-beer                  12.5228519 29.0254237 21.719277  8.848685e-05   3.920169
+C9=smoking-yes                  12.0820669 33.6864407 26.126663  1.262108e-04   3.833738
+C15=act-jogging                 12.9186603 22.8813559 16.597181  2.074826e-04   3.709727
+D6=explain drug-unknown         18.3544304  6.1440678  3.136788  3.856971e-04   3.549682
+D3=nurce-no                      9.7650356 95.9745763 92.098471  4.277567e-04   3.522339
+Sexo_edad=f(26_35)              13.7577002 14.1949153  9.668453  8.983940e-04   3.320553
+C11=ever smoked-99              13.2616487 15.6779661 11.078023  1.385883e-03   3.197575
+B3=much better last y           15.4471545  8.0508475  4.883859  1.811851e-03   3.119456
+D14B=blood/urine-99             15.1394422  8.0508475  4.983125  2.667356e-03   3.003680
+Prihodi=(4000_5000)             12.9629630 14.8305085 10.720667  3.633717e-03   2.908324
+D1B=specialist-99               14.6520147  8.4745763  5.419893  3.838475e-03   2.891140
+C15=act-walking                 11.1543450 36.4406780 30.613460  4.427848e-03   2.845955
+D5=should drug-unknownn         15.5080214  6.1440678  3.712527  6.355635e-03   2.728846
+C9=smoking-sometimes            13.0641330 11.6525424  8.358150  9.273280e-03   2.601812
+B10_6=down heart_little t       10.8171664 38.9830508 33.770101  1.273623e-02   2.491061
+B8=bodily pain_verymild         11.6279070 18.0084746 14.512607  2.699025e-02   2.211659
+C10=cigarettes-20 more          11.8506494 15.4661017 12.229502  2.819021e-02   2.194629
+Prihodi=(3500_4000)             12.3853211 11.4406780  8.655946  2.891658e-02   2.184622
+C14=drink-spirit                12.2317597 12.0762712  9.251539  3.116928e-02   2.154905
+Prihodi=(5000_6000)             12.6074499  9.3220339  6.928727  3.809563e-02   2.073824
+SKOLA=faculty_PhD_MSc           11.8546845 13.1355932 10.383165  4.497028e-02   2.004932
+D5=should drug-no               12.8027682  7.8389831  5.737542  4.721109e-02   1.984402
+D1A=GP-99                       16.6666667  2.5423729  1.429422  4.878435e-02   1.970472
+Sexo_edad=m(46_55)               6.2295082  4.0254237  6.055192  4.435081e-02  -2.010760
+D14C=control teeth-99            6.1016949  3.8135593  5.856661  3.932017e-02  -2.060821
+C10=cigarettes-99                6.9158879  7.8389831 10.621402  3.432292e-02  -2.116257
+B10_4=calm_none time             5.5776892  2.9661017  4.983125  2.663937e-02  -2.216762
+C11=ever smoked-no               8.2602677 37.9237288 43.021640  1.842327e-02  -2.356999
+B10_7=worn out_some time         8.0065359 31.1440678 36.450268  1.124343e-02  -2.535041
+D14F=breast (female)-yes         6.7846608  9.7457627 13.460393  1.045010e-02  -2.560569
+B11=probl life_little t          7.4135091 19.0677966 24.101648  6.202145e-03  -2.736898
+Sexo_edad=m(56_65)               5.2147239  3.6016949  6.472106  4.722776e-03  -2.825358
+C14=drink-wine                   7.9212674 34.9576271 41.353981  2.861679e-03  -2.982218
+SKOLA=primary_school             6.9513406 14.8305085 19.992059  2.477209e-03  -3.026112
+MAT_STAN=low                     7.0159027 15.8898305 21.222950  2.257522e-03  -3.054080
+B10_2=nervous_some time          7.7674897 31.9915254 38.594401  1.792711e-03  -3.122584
+Sexo_edad=m(76+)                 2.2058824  0.6355932  2.700020  9.317387e-04  -3.310367
+Prihodi=(1000_1500)              5.7291667  6.9915254 11.435378  7.960122e-04  -3.354178
+D5=should drug-yes               8.9015567 86.0169492 90.549931  7.936591e-04  -3.354997
+D14F=breast (female)-no          7.6778144 34.5338983 42.148104  3.926252e-04  -3.544992
+B10_2=nervous_all time           2.7173913  1.0593220  3.652968  3.734540e-04  -3.558166
+D6=explain drug-yes              8.8787086 86.2288136 91.006552  3.241206e-04  -3.595218
+Sexo_edad=m(66_75)               4.1009464  2.7542373  6.293429  2.853674e-04  -3.628233
+C10=cigarettes-none              7.9767948 46.6101695 54.754814  1.985437e-04  -3.720862
+B12_1=sick easy_def. true        3.4351145  1.9067797  5.201509  1.728387e-04  -3.755727
+D3=nurce-yes                     4.1782730  3.1779661  7.127258  1.349377e-04  -3.817268
+B10_3=felt down_all time         0.8196721  0.2118644  2.422077  7.847425e-05  -3.949013
+D14E=PAP test(female)-no         7.1510957 26.2711864 34.425253  6.741897e-05  -3.985215
+B7=soc act_extremly              1.1627907  0.4237288  3.414731  6.831179e-06  -4.498882
+B45=clim1_much limited           5.3164557  8.8983051 15.683939  6.312138e-06  -4.515655
+B9=pain act_little bit           6.0089686 14.1949153 22.136192  5.320937e-06  -4.551719
+B11=probl life_all time          2.0746888  1.0593220  4.784594  3.901100e-06  -4.616583
+B10_6=down heart_all time        0.0000000  0.0000000  2.600754  2.112999e-06  -4.742305
+B7=soc act_slightely             5.7889823 13.1355932 21.262656  2.061025e-06  -4.747347
+B12_3=expect_don't know          6.9802731 29.2372881 39.249553  2.016438e-06  -4.751770
+B10_8=happy_none time            1.7391304  0.8474576  4.566210  1.829179e-06  -4.771435
+B10_3=felt down_most time        1.4354067  0.6355932  4.149295  1.814232e-06  -4.773087
+B8=bodily pain_very sev          1.4084507  0.6355932  4.228708  1.269985e-06  -4.844394
+B10_2=nervous_most time          2.7108434  1.9067797  6.591225  9.712761e-07  -4.897370
+C13=alcohol-not now              3.1088083  2.5423729  7.663292  8.044163e-07  -4.934293
+B10_7=worn out_all time          1.8939394  1.0593220  5.241215  5.623980e-07  -5.003702
+B12_1=sick easy_mostly fal       6.0869565 17.7966102 27.397260  3.469511e-07  -5.095975
+C9=smoking-no                    7.8163017 54.4491525 65.276951  3.419009e-07  -5.098752
+B12_2=healthy_def. false         2.9925187  2.5423729  7.961088  2.611348e-07  -5.149534
+Sexo_edad=f(76+)                 1.5810277  0.8474576  5.022831  2.457317e-07  -5.160926
+B48=walkseg_much limited         4.7559449  8.0508475 15.862617  1.646881e-07  -5.235333
+D1C=dentist-no                   7.2593168 39.6186441 51.141553  1.386111e-07  -5.267080
+D14C=control teeth-no            7.1196094 37.0762712 48.798888  7.593888e-08  -5.376521
+B8=bodily pain_mild              4.6077210  7.8389831 15.942029  5.422831e-08  -5.436858
+B10_9=tired_all time             2.2857143  1.6949153  6.948581  5.343251e-08  -5.439493
+Sexo_edad=f(46_55)               3.2719836  3.3898305  9.708160  5.242229e-08  -5.442892
+B10_6=down heart_most time       1.1811024  0.6355932  5.042684  3.068186e-08  -5.537501
+B41=hard phy_limited a           5.5144033 14.1949153 24.121501  2.700264e-08  -5.559837
+B12_4=excellent_don't know       3.6206897  4.4491525 11.514791  2.320427e-08  -5.586237
+Edad_classe=46_55 a\xf1os        4.4080605  7.4152542 15.763351  1.576945e-08  -5.652975
+Sex=female                       7.4582924 48.3050847 60.690887  1.088259e-08  -5.716367
+B2=muchworseothers               0.4608295  0.2118644  4.308120  8.304258e-09  -5.762163
+B12_1=sick easy_don't know       5.5555556 15.8898305 26.801668  3.995947e-09  -5.884361
+B12_3=expect_def.true            2.0997375  1.6949153  7.564026  3.992646e-09  -5.884498
+MAT_STAN=verylow                 4.3023256  7.8389831 17.073655  1.330554e-09  -6.063663
+D13=hospitalized-yes             3.6619718  5.5084746 14.095692  5.324190e-10  -6.209239
+Edad_classe=76 y m\xe1s a\xf1os  1.7994859  1.4830508  7.722851  3.626499e-10  -6.269311
+B12_2=healthy_don't know         5.3206997 15.4661017 27.238436  2.327514e-10  -6.338010
+B10_4=calm_some time             5.1813472 14.8305085 26.821521  7.742127e-11  -6.505527
+B11=probl life_most time         1.7156863  1.4830508  8.100060  6.712478e-11  -6.526945
+B10_9=tired_most time            2.3575639  2.5423729 10.105221  4.528190e-11  -6.585676
+B10_3=felt down_good time        1.6867470  1.4830508  8.239031  3.584822e-11  -6.620295
+Prihodi=to 1000 Kn)              3.0674847  4.2372881 12.944213  3.124116e-11  -6.640599
+B10_1=full pep_ none time        1.3123360  1.0593220  7.564026  1.598008e-11  -6.738708
+Sexo_edad=f(56_65)               1.9067797  1.9067797  9.370657  8.092114e-12  -6.836907
+B10_3=felt down_some time        4.2654028  9.5338983 20.945007  4.957884e-12  -6.906777
+B10_7=worn out_most time         1.5981735  1.4830508  8.695652  4.469741e-12  -6.921472
+B10_6=down heart_some time       5.0071531 14.8305085 27.754616  3.632043e-12  -6.950806
+D14D=control lung-yes            4.6341463 12.0762712 24.419297  2.660816e-12  -6.994566
+B12_2=healthy_mostly false       3.5879630  6.5677966 17.153067  1.700556e-12  -7.057065
+B10_5=lot energy_some time       4.7583082 13.3474576 26.285487  1.057547e-12  -7.122802
+B10_5=lot energy_none time       1.5418502  1.4830508  9.013302  1.031222e-12  -7.126274
+Edad_classe=56_65 a\xf1os        3.2581454  5.5084746 15.842764  6.690077e-13  -7.185624
+SKOLA=no_school                  2.5356577  3.3898305 12.527298  6.641425e-13  -7.186621
+B9=pain act_extremly             0.5865103  0.4237288  6.769903  6.152848e-13  -7.197052
+B10_7=worn out_good time         3.6677454  7.2033898 18.403812  4.516971e-13  -7.239092
+B10_2=mervous_good time          2.8328612  4.2372881 14.016280  4.033951e-13  -7.254417
+B10_4=calm_little time           3.6082474  7.4152542 19.257495  5.268990e-14  -7.525075
+B47=walk1km_limited              3.5532995  7.4152542 19.555291  1.627743e-14  -7.677065
+B12_1=sick easy_mostly tru       2.1739130  2.9661017 12.785388  9.318350e-15  -7.748228
+B43=groc_much limited            3.0542986  5.7203390 17.550129  2.305822e-15  -7.923680
+B410=dress_limited               1.7094017  2.1186441 11.614056  1.748528e-15  -7.957993
+B10_6=down heart_good time       1.0373444  1.0593220  9.569188  1.009790e-15  -8.025663
+B10_9=tired_good time            3.0501089  5.9322034 18.225134  5.191356e-16  -8.106933
+B7=soc act_moderately            2.4739583  4.0254237 15.247171  4.744710e-16  -8.117861
+B42=mod phy_much limited         3.2868526  6.9915254 19.932500  2.936908e-16  -8.175890
+B8=bodily pain_severe            1.9230769  2.7542373 13.420687  9.213603e-17  -8.314505
+B10_1=full pep_some time         4.4357469 14.4067797 30.434783  3.064414e-17  -8.444083
+B46=bending_much limited         3.3697632  7.8389831 21.798690  2.010991e-17  -8.493157
+B10_8=happy_little time          2.0408163  3.1779661 14.592019  1.336714e-17  -8.540475
+Sexo_edad=f(66_75)               0.7984032  0.8474576  9.946397  1.310476e-17  -8.542765
+B7=soc act_quite a bit           0.7874016  0.8474576 10.085368  6.447893e-18  -8.624312
+B48=walkseg_limited              2.4333720  4.4491525 17.133214  2.281922e-18  -8.742409
+B3=much worse last y             0.2309469  0.2118644  8.596387  2.094766e-18  -8.752069
+B49=walk1block_limited           1.5988372  2.3305085 13.658924  6.990368e-19  -8.875047
+B44=climstairs_much limt         3.2534247  8.0508475 23.188406  1.925485e-19  -9.017433
+Edad_classe=66_75 a\xf1os        2.0782396  3.6016949 16.239825  1.915566e-19  -9.017999
+D14B=blood/urine-yes             6.1437001 37.5000000 57.196744  1.760748e-19  -9.027228
+B47=walk1km_much limited         3.0575540  7.2033898 22.076633  1.119493e-19  -9.076668
+B12_3=expect_mostly true         2.5157233  5.0847458 18.939845  6.563594e-20  -9.134622
+B44=climstairs_lim_littl         3.4003091  9.3220339 25.689895  8.995432e-21  -9.347252
+B9=pain act_moderate             1.5831135  2.5423729 15.048640  5.601955e-21  -9.397228
+B61=emot cut work_yes            3.1122031  8.0508475 24.240619  1.802284e-21  -9.515853
+B9=pain act_quite a bit          1.4608234  2.3305085 14.949375  1.198878e-21  -9.558144
+B43=groc_limited a littl         2.9814666  7.8389831 24.637681  7.115946e-23  -9.846236
+B63=emot_workcareful_yes         3.4098817 10.3813559 28.528886  1.907658e-23  -9.977738
+B8=bodily pain_moderate          2.8962188  7.6271186 24.677387  1.377256e-23 -10.010019
+D14A=measured BP-yes             6.9368667 56.5677966 76.414532  1.182229e-23 -10.025114
+C15=act-reading                  4.9115044 23.5169492 44.867977  6.911248e-24 -10.078009
+D1B=specialist-yes               5.2631579 28.1779661 50.168751  2.528040e-24 -10.176375
+B46=bending_lim a littl          3.0634573  8.8983051 27.218582  5.305290e-25 -10.327263
+B42=mod phy_ limited a           2.8549383  7.8389831 25.729601  4.141503e-25 -10.350997
+B10_8=happy_some time            3.4393251 11.2288136 30.593607  2.814327e-25 -10.387917
+B45=clim1_limited                2.0892688  4.6610169 20.905301  1.849596e-25 -10.427885
+B11=probl life_some time         2.8315946  8.0508475 26.642843  2.275358e-26 -10.625195
+B62=emot less_w.like_yes         3.0483764  9.7457627 29.958309  3.122631e-28 -11.018193
+D1A=GP-yes                       6.7899671 56.7796610 78.360135  1.280407e-28 -11.098169
+B3=worse last y                  1.8949182  4.6610169 23.049434  3.073399e-30 -11.426767
+B10_5=lot energy_little t        1.5887850  3.6016949 21.242803  2.178431e-30 -11.456623
+B12_4=excellent_def.false        1.2257406  2.5423729 19.436172  6.836544e-31 -11.556596
+B10_1=full pep_little time       0.8752735  1.6949153 18.145722  4.588274e-32 -11.786383
+B2=worseothers                   0.5952381  1.0593220 16.676593  4.190090e-32 -11.794028
+D4=any recipes-yes               5.8180825 45.1271186 72.682152  2.125382e-40 -13.306378
+B51=health_cut work_yes          1.9713262  6.9915254 33.234068  7.561231e-46 -14.213445
+B12_4=excellent_mostly fal       0.5907173  1.4830508 23.525908  4.725951e-47 -14.406264
+B53=limited_kindwork_yes         1.8814139  6.9915254 34.822315  4.199659e-50 -14.883798
+B41=hard phy_much limite         1.7592084  6.7796610 36.112766  1.292065e-54 -15.563326
+B52=health_wouldlike_yes         2.1611002  9.3220339 40.420885  4.680877e-56 -15.774228
+B54=health_diff work_yes         1.7587940  7.4152542 39.507643  1.206532e-61 -16.567023
+
+$category$health_fair
+                                  Cla/Mod   Mod/Cla    Global      p.value     v.test
+B12_4=excellent_mostly fal      44.135021 39.561271 23.525908 6.511497e-54  15.459487
+B8=bodily pain_moderate         37.409493 35.173979 24.677387 8.196529e-24  10.061233
+B42=mod phy_ limited a          36.805556 36.081694 25.729601 1.083065e-22   9.803913
+B44=climstairs_lim_littl        36.244204 35.476551 25.689895 1.674727e-20   9.281268
+B43=groc_limited a littl        36.180500 33.963691 24.637681 3.181597e-19   8.962236
+B9=pain act_moderate            39.313984 22.541604 15.048640 1.042729e-17   8.569127
+B46=bending_lim a littl         34.792123 36.081694 27.218582 1.232268e-16   8.279950
+D4=any recipes-yes              29.226987 80.937973 72.682152 9.435318e-16   8.033990
+B3=worse last y                 35.228252 30.937973 23.049434 8.363270e-15   7.761951
+B41=hard phy_much limite        32.490379 44.704992 36.112766 6.135369e-14   7.505160
+B11=probl life_some time        34.053651 34.568835 26.642843 8.553982e-14   7.461505
+D1A=GP-yes                      28.477325 85.022693 78.360135 1.903437e-12   7.041381
+B45=clim1_limited               34.852802 27.760968 20.905301 2.881759e-12   6.983373
+B47=walk1km_limited             35.228426 26.248109 19.555291 2.976186e-12   6.978844
+B10_1=full pep_some time        32.354860 37.518911 30.434783 1.197519e-10   6.439647
+Edad_classe=56_65 a\xf1os       35.213033 21.255673 15.842764 9.370146e-10   6.119785
+D1B=specialist-yes              29.837752 57.034796 50.168751 5.945776e-09   5.818276
+Edad_classe=66_75 a\xf1os       34.596577 21.406959 16.239825 6.897316e-09   5.793406
+B12_1=sick easy_don't know      32.074074 32.753404 26.801668 1.979059e-08   5.613822
+B52=health_wouldlike_yes        30.402750 46.822995 40.420885 3.850872e-08   5.497558
+D14B=blood/urine-yes            29.156543 63.540091 57.196744 4.979813e-08   5.452030
+B10_5=lot energy_some time      31.948640 31.996974 26.285487 5.926799e-08   5.420996
+B48=walkseg_limited             32.444959 21.180030 17.133214 7.927221e-06   4.467140
+Sexo_edad=m(66_75)              37.223975  8.925870  6.293429 9.280676e-06   4.433288
+B54=health_diff work_yes        29.648241 44.629349 39.507643 1.004406e-05   4.416223
+B12_2=healthy_mostly false      32.291667 21.104387 17.153067 1.291490e-05   4.361542
+Sexo_edad=f(56_65)              34.745763 12.405446  9.370657 1.760871e-05   4.293237
+B9=pain act_little bit          31.300448 26.399395 22.136192 1.784095e-05   4.290328
+B2=worseothers                  32.261905 20.499244 16.676593 1.982479e-05   4.266855
+B10_8=happy_some time           30.175211 35.173979 30.593607 2.991713e-05   4.174096
+D5=should drug-yes              27.055470 93.343419 90.549931 3.108351e-05   4.165379
+B41=hard phy_limited a          30.864198 28.366112 24.121501 3.294733e-05   4.152076
+B12_2=healthy_don't know        30.466472 31.618759 27.238436 3.704422e-05   4.125182
+B10_3=felt down_good time       34.698795 10.892587  8.239031 6.955283e-05   3.977810
+Sexo_edad=m(56_65)              35.889571  8.850227  6.472106 7.243758e-05   3.968134
+B10_6=down heart_some time      30.185980 31.921331 27.754616 9.453747e-05   3.904200
+D14D=control lung-yes           30.487805 28.366112 24.419297 1.188285e-04   3.848531
+B12_3=expect_mostly true        31.027254 22.390318 18.939845 2.343507e-04   3.678782
+Sexo_edad=f(46_55)              33.333333 12.329803  9.708160 2.463049e-04   3.666072
+B10_7=worn out_some time        29.248366 40.620272 36.450268 2.617757e-04   3.650455
+D14A=measured BP-yes            27.487659 80.030257 76.414532 2.672642e-04   3.645123
+B10_9=tired_good time           30.936819 21.482602 18.225134 4.230439e-04   3.525275
+MAT_STAN=low                    30.495790 24.659607 21.222950 4.346125e-04   3.518122
+D14C=control teeth-no           28.478438 52.950076 48.798888 4.409888e-04   3.514255
+Sexo_edad=f(66_75)              32.934132 12.481089  9.946397 4.466138e-04   3.510887
+B12_3=expect_don't know         28.932726 43.267776 39.249553 5.181328e-04   3.471203
+B12_4=excellent_don't know      32.241379 14.145234 11.514791 6.156428e-04   3.424628
+B10_7=worn out_good time        30.744337 21.558245 18.403812 6.667891e-04   3.402883
+B10_9=tired_some time           28.571429 46.444781 42.664284 1.244437e-03   3.228494
+B10_1=full pep_little time      30.525164 21.104387 18.145722 1.322106e-03   3.211138
+B10_4=calm_some time            29.533679 30.181543 26.821521 1.441252e-03   3.186260
+Prihodi=(1000_1500)             31.770833 13.842663 11.435378 1.642908e-03   3.148179
+B7=soc act_moderately           30.729167 17.851740 15.247171 2.467684e-03   3.027276
+B8=bodily pain_mild             30.510585 18.532526 15.942029 3.085766e-03   2.959062
+B10_5=lot energy_little t       29.719626 24.054463 21.242803 3.931488e-03   2.883607
+B51=health_cut work_yes         28.733572 36.384266 33.234068 4.831143e-03   2.818082
+B10_3=felt down_some time       29.478673 23.524962 20.945007 7.779734e-03   2.661483
+Edad_classe=46_55 a\xf1os       30.100756 18.078669 15.763351 7.807002e-03   2.660305
+SKOLA=primary_school            29.394240 22.390318 19.992059 1.181666e-02   2.517573
+B62=emot less_w.like_yes        28.561962 32.602118 29.958309 1.502577e-02   2.431757
+C14=drink-wine                  27.940470 44.024206 41.353981 2.196565e-02   2.290961
+C15=act-reading                 27.787611 47.503782 44.867977 2.504100e-02   2.240770
+Edad_classe=76 y m\xe1s a\xf1os 30.848329  9.077156  7.722851 3.417514e-02   2.117999
+B10_6=down heart_good time      30.290456 11.043873  9.569188 3.598513e-02   2.097095
+B7=soc act_slightely            28.758170 23.298033 21.262656 3.635117e-02   2.092977
+B53=limited_kindwork_yes        27.993158 37.140696 34.822315 3.995347e-02   2.054230
+B12_2=healthy_mostly true       24.560440 33.812405 36.132619 4.049410e-02  -2.048673
+B53=limited_king work_no        25.312214 62.859304 65.177685 3.995347e-02  -2.054230
+B10_9=tired_none time           20.996441  4.462935  5.578717 3.672827e-02  -2.088772
+B10_6=down heart_none time      23.716153 19.213313 21.262656 3.299885e-02  -2.132097
+B10_6=down heart_all time       18.320611  1.815431  2.600754 3.248609e-02  -2.138378
+B10_4=calm_all time             21.019108  4.992436  6.233869 2.728609e-02  -2.207400
+B10_4=calm_most time            22.860963 12.934947 14.850109 2.141568e-02  -2.300575
+D1C=dentisit-yes                24.610449 40.620272 43.319436 2.098203e-02  -2.308308
+B12_1=sick easy_def. true       20.229008  4.009077  5.201509 2.055561e-02  -2.316049
+B10_6=down heart_most time      20.078740  3.857791  5.042684 1.944393e-02  -2.336909
+B62=emot less_w.like_no         25.255102 67.397882 70.041691 1.502577e-02  -2.431757
+B12_2=healthy_def. false        21.197007  6.429652  7.961088 1.498896e-02  -2.432646
+B10_5=lot energy_good time      23.178138 17.322239 19.614850 1.377251e-02  -2.463143
+B10_7=worn out_none time        21.755725  8.623298 10.403018 1.236548e-02  -2.501539
+B48=walkseg_not at all          25.125926 64.145234 67.004169 1.037146e-02  -2.563192
+B7=soc act_extremly             18.023256  2.344932  3.414731 1.031138e-02  -2.565209
+D14D=control lung-no            25.068037 62.708018 65.654159 8.893674e-03  -2.616114
+D5=should drug-unknownn         18.181818  2.571861  3.712527 8.624462e-03  -2.626592
+D6=explain drug-unknown         17.088608  2.042360  3.136788 6.001210e-03  -2.747715
+B51=health_cut work_no          25.007434 63.615734 66.765932 4.831143e-03  -2.818082
+C14=drink-spirit                20.815451  7.337368  9.251539 4.407973e-03  -2.847387
+B2=muchbetterothers             18.677043  3.630862  5.102243 3.625723e-03  -2.909013
+B10_8=happy_all time            20.541761  6.883510  8.794918 3.585037e-03  -2.912539
+B11=probl life_all time         18.257261  3.328290  4.784594 2.935711e-03  -2.974391
+B10_3=felt down_all time        14.754098  1.361573  2.422077 2.236594e-03  -3.056873
+D5=should drug-no               18.685121  4.084720  5.737542 1.978203e-03  -3.093485
+D14A=measured BP-no             22.507123 17.927383 20.905301 1.734709e-03  -3.132252
+B10_1=full pep_good time        22.592259 18.986384 22.056780 1.546859e-03  -3.165746
+B10_7=worn out_little time      22.328244 17.700454 20.806035 1.058242e-03  -3.274567
+B10_7=worn out_all time         17.803030  3.555219  5.241215 9.388808e-04  -3.308229
+B8=bodily pain_very sev         16.431925  2.647504  4.228708 5.395178e-04  -3.460328
+B7=soc act_not at all           24.066720 45.839637 49.990073 4.414129e-04  -3.514000
+B10_5=lot energy_most time      20.943135 11.422088 14.314076 3.740200e-04  -3.557768
+SKOLA=faculty_PhD_MSc           19.885277  7.866868 10.383165 3.535956e-04  -3.572496
+D14C=control teeth-yes          23.686515 40.922844 45.344451 1.655919e-04  -3.766440
+B10_1=full pep_all time         18.554217  5.824508  8.239031 1.288274e-04  -3.828690
+B10_3=felt down_none time       23.025953 31.543116 35.953941 9.113485e-05  -3.913057
+B8=bodily pain_verymild         20.383037 11.270802 14.512607 7.027919e-05  -3.975339
+C15=act-sport                   14.130435  1.966717  3.652968 5.957070e-05  -4.014505
+Prihodi=(more than 6000)        18.162393  6.429652  9.291245 1.655628e-05  -4.306894
+B54=health_diff work_no         24.023630 55.370651 60.492357 1.004406e-05  -4.416223
+B9=pain act_extremly            16.129032  4.160363  6.769903 4.425364e-06  -4.590334
+B10_9=tired_little time         19.879518 12.481089 16.478062 3.125643e-06  -4.662386
+B3=equal last y                 23.548983 48.184569 53.702601 2.890063e-06  -4.678482
+B3=much worse last y            17.090069  5.597579  8.596387 2.576270e-06  -4.701999
+B45=clim1_not at all            24.013776 58.018154 63.410760 2.459850e-06  -4.711430
+B10_8=happy_most time           19.709794 12.329803 16.418503 1.752675e-06  -4.780032
+D14B=blood/urine-no             22.467192 32.375189 37.820131 1.724288e-06  -4.783314
+Sexo_edad=f(26_35)              17.453799  6.429652  9.668453 1.534214e-06  -4.806727
+B10_5=lot energy_all time       16.875000  6.127080  9.529482 3.421084e-07  -5.098637
+B10_1=full pep_most time        18.301611  9.455371 13.559659 1.689993e-07  -5.230558
+D1B=specialist-no               22.530174 38.124054 44.411356 7.614167e-08  -5.376041
+B52=health_would like_no        23.425525 53.177005 59.579115 3.850872e-08  -5.497558
+B2=muchworseothers               9.677419  1.588502  4.308120 5.864717e-10  -6.194024
+B12_2=healthy_def. true         16.034483  7.034796 11.514791 5.592961e-10  -6.201494
+B47=walk1km_not at all          22.959184 51.059002 58.368076 4.096075e-10  -6.250322
+Sexo_edad=m(26_35)              12.716763  3.328290  6.869168 2.533375e-10  -6.324936
+B11=probl life_none time        21.069869 29.198185 36.370856 1.805814e-10  -6.377008
+MAT_STAN=overaverage            15.625000  7.186082 12.070677 3.160731e-11  -6.638881
+B12_1=sick easy_def. false      19.700214 20.877458 27.814175 2.449440e-11  -6.676363
+B12_3=expect_def_ false         17.954071 13.010590 19.019257 2.426301e-11  -6.677755
+D1A=GP-no                       17.976424 13.842663 20.210443 4.789822e-12  -6.911670
+Sexo_edad=m(18_25)               9.302326  1.815431  5.122096 3.368150e-12  -6.961439
+Sexo_edad=f(18_25)              11.811024  3.403933  7.564026 8.463138e-13  -7.153437
+B43=groc_ not at all            22.287088 49.092284 57.812190 9.854616e-14  -7.442836
+B46=bending_not at all          21.534268 41.830560 50.982728 8.649554e-15  -7.757682
+Edad_classe=26_35 a\xf1os       15.486194  9.757943 16.537622 7.121168e-16  -8.068423
+D4=any recipes-no               18.107303 18.381241 26.642843 4.935973e-16  -8.113062
+B9=pain act_not at all          19.951691 31.240545 41.095890 1.060104e-17  -8.567223
+B42=mod phy_ not at all         21.300694 44.099849 54.337900 3.694533e-18  -8.687822
+B8=bodily pain_none             17.578410 18.229955 27.218582 1.588676e-18  -8.783215
+B12_4=excellent_mostly t        18.568894 23.751891 33.571570 2.876944e-19  -8.973325
+B44=climstairs_notat all        20.388350 39.712557 51.121699 3.671278e-22  -9.679885
+Edad_classe=18_25 a\xf1os       10.798122  5.219365 12.686123 1.233881e-24 -10.245964
+B41=hard phy_not at all         17.773340 26.928896 39.765734 1.428708e-29 -11.292526
+B12_4=excellent_def.true         8.637874  3.933434 11.951558 1.426479e-30 -11.493247
+
+$category$health_good
+                                  Cla/Mod    Mod/Cla    Global      p.value     v.test
+B12_4=excellent_mostly t        37.078652 45.8668617 33.571570 9.905238e-29  11.121092
+B2=eqaulothers                  33.142243 67.6664228 55.409966 4.252881e-27  10.780560
+B45=clim1_not at all            31.997495 74.7622531 63.410760 2.646529e-25  10.393780
+B48=walkseg_not at all          31.288889 77.2494514 67.004169 5.686891e-22   9.635042
+B42=mod phy_ not at all         32.517355 65.1060717 54.337900 4.286712e-21   9.425351
+B51=health_cut work_no          31.162652 76.6642282 66.765932 1.693849e-20   9.280059
+B43=groc_ not at all            32.005495 68.1784931 57.812190 4.333740e-20   9.179431
+B41=hard phy_limited a          37.037037 32.9188003 24.121501 2.778203e-18   8.720155
+B49=walk1block_notat all        30.245595 82.8822238 74.369664 3.919797e-18   8.681094
+B54=health_diff work_no         31.407942 70.0073153 60.492357 1.537146e-17   8.524317
+B53=limited_king work_no        30.947304 74.3233358 65.177685 3.037323e-17   8.445120
+B410=dress_no at all            29.757607 84.4184345 76.990272 3.800179e-15   7.861349
+B52=health_would like_no        31.022992 68.1053402 59.579115 3.160738e-14   7.591561
+B47=walk1km_not at all          30.986395 66.6422824 58.368076 2.402058e-13   7.324268
+B44=climstairs_notat all        31.572816 59.4732992 51.121699 4.118733e-13   7.251601
+B12_4=excellent_don't know      40.172414 17.0446233 11.514791 4.262951e-13   7.246939
+B46=bending_not at all          31.308411 58.8149232 50.982728 1.062644e-11   6.797752
+MAT_STAN=average                31.262606 56.6934894 49.215803 9.086706e-11   6.481414
+B3=equal last y                 30.757856 60.8632041 53.702601 4.403514e-10   6.239009
+B61=emot cut work_no            29.297694 81.7849305 75.759381 5.278866e-10   6.210582
+B12_2=healthy_mostly true       32.252747 42.9407462 36.132619 1.103191e-09   6.093716
+B12_1=sick easy_mostly fal      33.405797 33.7234821 27.397260 1.328058e-09   6.063965
+B62=emot less_w.like_no         29.535147 76.2253109 70.041691 3.103175e-09   5.926045
+B8=bodily pain_mild             35.616438 20.9217264 15.942029 8.392203e-09   5.760386
+B10_5=lot energy_some time      33.232628 32.1872714 26.285487 9.988730e-09   5.730920
+B10_9=tired_some time           31.270358 49.1587418 42.664284 1.438737e-08   5.668714
+B7=soc act_not at all           30.659253 56.4740307 49.990073 1.908922e-08   5.620059
+B10_1=full pep_good time        33.843384 27.5054865 22.056780 2.136191e-08   5.600594
+D1B=specialist-no               31.023692 50.7681053 44.411356 3.232087e-08   5.528376
+B9=pain act_not at all          31.159420 47.1836138 41.095890 9.399982e-08   5.337957
+B10_7=worn out_some time        31.481481 42.2823702 36.450268 1.831350e-07   5.215689
+Edad_classe=36_45 a\xf1os       34.725849 19.4586686 15.207465 5.102468e-07   5.022419
+B63=emot_work careful_no        29.083333 76.5910753 71.471114 6.730945e-07   4.968970
+D13=hospitalized-no             28.410689 88.6613021 84.693270 1.018589e-06   4.888013
+B9=pain act_little bit          32.914798 26.8471105 22.136192 1.259918e-06   4.845974
+B10_4=calm_good time            32.074127 32.9188003 27.853881 1.278812e-06   4.843019
+B12_3=expect_don't know         30.905412 44.6964155 39.249553 1.512921e-06   4.809521
+Sexo_edad=f(36-45)              36.286920 12.5822970  9.410363 4.620072e-06   4.581339
+B10_6=down heart_little t       30.981775 38.5515728 33.770101 1.358355e-05   4.350487
+B11=probl life_little t         31.960461 28.3833211 24.101648 1.810487e-05   4.287066
+B10_5=lot energy_good time      32.489879 23.4820775 19.614850 3.178752e-05   4.160267
+D4=any recipes-no               31.371088 30.7973665 26.642843 5.521672e-05   4.032372
+B10_8=happy_good time           31.403648 28.9685443 25.034743 9.841152e-05   3.894475
+B8=bodily pain_verymild         33.105335 17.7029993 14.512607 1.143365e-04   3.857962
+Edad_classe=46_55 a\xf1os       32.745592 19.0197513 15.763351 1.383317e-04   3.811132
+B12_2=healthy_don't know        31.049563 31.1631309 27.238436 1.530990e-04   3.785988
+B10_1=full pep_some time        30.724070 34.4550110 30.434783 1.714979e-04   3.757677
+B10_3=felt down_little tim      30.877193 32.1872714 28.290649 2.011123e-04   3.717615
+D14B=blood/urine-no             30.131234 41.9897586 37.820131 2.083151e-04   3.708713
+B8=bodily pain_none             30.853392 30.9436723 27.218582 3.234454e-04   3.595760
+C15=act-jogging                 32.177033 19.6781273 16.597181 4.036304e-04   3.537699
+B12_3=expect_mostly false       31.942634 17.9224579 15.227318 1.346008e-03   3.205985
+C14=drink-wine                  29.476716 44.9158742 41.353981 1.779231e-03   3.124805
+D1A=GP-no                       31.041257 23.1163131 20.210443 1.914693e-03   3.103155
+Prihodi=(1500_2000)             32.938856 12.2165326 10.065515 2.334853e-03   3.043961
+D3=nurce-no                     27.678379 93.9283102 92.098471 2.709818e-03   2.998871
+C9=smoking-yes                  30.319149 29.1880029 26.126663 2.728323e-03   2.996797
+B11=probl life_none time        29.585153 39.6488661 36.370856 3.278365e-03   2.940355
+Sexo_edad=f(26_35)              32.854209 11.7044623  9.668453 3.346888e-03   2.933940
+B2=betterothers                 30.926724 20.9948793 18.423665 4.450614e-03   2.844321
+Edad_classe=26_35 a\xf1os       31.092437 18.9465984 16.537622 5.457478e-03   2.778713
+Sexo_edad=m(46_55)              34.098361  7.6079005  6.055192 5.769126e-03   2.760623
+D14D=control lung-no            28.333837 68.5442575 65.654159 8.169581e-03   2.644980
+Sexo_edad=f(46_55)              31.901840 11.4118508  9.708160 1.396283e-02   2.458218
+SKOLA=grammar_school            29.067358 41.0387710 38.316458 1.556223e-02   2.419024
+B10_3=felt down_none time       29.099945 38.5515728 35.953941 1.940843e-02   2.337592
+B10_2=nervous_some time         28.960905 41.1850768 38.594401 2.148312e-02   2.299385
+B41=hard phy_not at all         28.856715 42.2823702 39.765734 2.624932e-02   2.222503
+B10_7=worn out_little time      29.866412 22.8968544 20.806035 2.665865e-02   2.216480
+D14D=control lung-99            31.200000 11.4118508  9.926544 3.340109e-02   2.127229
+C10=cigarettes-less 20          29.609929 24.4330651 22.394282 3.517438e-02   2.106345
+C13=alcohol-every day           30.011325 19.3855157 17.530276 3.587672e-02   2.098322
+B12_1=sick easy_def. false      29.264811 29.9926847 27.814175 3.600543e-02   2.096866
+C11=ever smoked-yes             29.042289 34.1623994 31.923764 3.817542e-02   2.072966
+C13=alcohol-sometime            29.809725 20.6291149 18.781020 4.171174e-02   2.036385
+Sexo_edad=m(36_45)              32.191781  6.8763716  5.797101 4.865236e-02   1.971626
+B410=dress_much limited         23.693380  9.9487930 11.395672 4.679961e-02  -1.988109
+D6=explain drug-no              22.033898  4.7549378  5.856661 3.946353e-02  -2.059321
+B7=soc act_moderately           24.088542 13.5332846 15.247171 3.757808e-02  -2.079427
+SKOLA=primary_school            24.428997 17.9956108 19.992059 2.965287e-02  -2.174696
+B10_2=nervous_most time         21.987952  5.3401609  6.591225 2.676100e-02  -2.214986
+Prihodi=(1000_1500)             23.263889  9.8024872 11.435378 2.478154e-02  -2.244791
+Edad_classe=56_65 a\xf1os       23.809524 13.8990490 15.842764 2.009615e-02  -2.324548
+B49=walk1block_much lim         23.217247 10.2414045 11.971412 1.968784e-02  -2.332244
+B3=worse last y                 24.375538 20.7022677 23.049434 1.517081e-02  -2.428276
+C11=ever smoked-no              25.380711 40.2340892 43.021640 1.463543e-02  -2.441277
+B42=mod phy_ limited a          24.305556 23.0431602 25.729601 7.413702e-03  -2.677666
+B8=bodily pain_moderate         24.135157 21.9458669 24.677387 5.738081e-03  -2.762385
+Sexo_edad=m(66_75)              20.504732  4.7549378  6.293429 5.052674e-03  -2.803656
+B10_3=felt down_all time        16.393443  1.4630578  2.422077 5.014669e-03  -2.806090
+B10_6=down heart_most time      19.685039  3.6576445  5.042684 4.951372e-03  -2.810181
+Sexo_edad=m(76+)                16.911765  1.6825165  2.700020 4.829527e-03  -2.818190
+D1A=GP-yes                      26.197112 75.6400878 78.360135 4.553202e-03  -2.837053
+C10=cigarettes-none             25.489485 51.4264813 54.754814 3.823940e-03  -2.892332
+B10_6=down heart_good time      21.576763  7.6079005  9.569188 3.296696e-03  -2.938627
+D3=nurce-yes                    20.612813  5.4133138  7.127258 3.199642e-03  -2.947877
+C13=alcohol-never               23.306773 17.1177762 19.932500 2.052925e-03  -3.082467
+C15=act-reading                 25.000000 41.3313826 44.867977 2.045080e-03  -3.083606
+C9=smoking-no                   25.699513 61.8141917 65.276951 1.711662e-03  -3.136176
+B10_4=calm_none time            18.725100  3.4381858  4.983125 1.532220e-03  -3.168511
+B10_8=happy_none time           18.260870  3.0724214  4.566210 1.373378e-03  -3.200188
+B2=muchbetterothers             18.677043  3.5113387  5.102243 1.247889e-03  -3.227702
+B10_2=nervous_all time          15.760870  2.1214338  3.652968 2.155163e-04  -3.700098
+D4=any recipes-yes              25.676045 68.7637162 72.682152 1.589014e-04  -3.776729
+B10_9=tired_most time           20.235756  7.5347476 10.105221 1.549113e-04  -3.783061
+Sexo_edad=f(66_75)              20.159681  7.3884418  9.946397 1.490812e-04  -3.792595
+D14B=blood/urine-yes            25.026033 52.7432334 57.196744 1.007820e-04  -3.888701
+B43=groc_limited a littl        22.884770 20.7754206 24.637681 8.699253e-05  -3.924272
+B12_3=expect_mostly true        22.117400 15.4352597 18.939845 8.450440e-05  -3.931253
+Sexo_edad=f(76+)                16.600791  3.0724214  5.022831 5.500216e-05  -4.033286
+Prihodi=to 1000 Kn)             20.552147  9.8024872 12.944213 3.403841e-05  -4.144616
+C14=drink-99                    22.740316 23.1894660 27.675203 1.140746e-05  -4.388615
+D14D=control lung-yes           22.276423 20.0438917 24.419297 7.879894e-06  -4.468421
+B10_4=calm_little time          21.340206 15.1426481 19.257495 4.222038e-06  -4.600142
+B10_6=down heart_all time       10.687023  1.0241405  2.600754 3.473505e-06  -4.640629
+B12_4=excellent_def.true        19.435216  8.5588881 11.951558 3.222438e-06  -4.656107
+D13=hospitalized-yes            20.000000 10.3877103 14.095692 2.248906e-06  -4.729665
+B45=clim1_limited               21.367521 16.4594001 20.905301 1.455885e-06  -4.817198
+B10_3=felt down_most time       13.397129  2.0482809  4.149295 1.222374e-06  -4.851976
+Edad_classe=66_75 a\xf1os       20.293399 12.1433797 16.239825 8.606023e-07  -4.921098
+B12_1=sick easy_mostly tru      19.254658  9.0709583 12.785388 7.211136e-07  -4.955589
+B63=emot_workcareful_yes        22.268615 23.4089247 28.528886 6.730945e-07  -4.968970
+B10_3=felt down_good time       17.108434  5.1938552  8.239031 5.982822e-07  -4.991771
+B7=soc act_extremly             11.627907  1.4630578  3.414731 5.507691e-07  -5.007726
+Edad_classe=76 y m\xe1s a\xf1os 16.709512  4.7549378  7.722851 5.109358e-07  -5.022160
+SKOLA=no_school                 19.017433  8.7783467 12.527298 4.385668e-07  -5.051407
+B10_7=worn out_all time         14.393939  2.7798098  5.241215 4.259304e-07  -5.056988
+B48=walkseg_limited             20.046350 12.6554499 17.133214 1.368172e-07  -5.269471
+C13=alcohol-not now             15.803109  4.4623263  7.663292 4.655036e-08  -5.464008
+D1B=specialist-yes              23.703997 43.8185808 50.168751 3.724651e-08  -5.503433
+B10_8=happy_little time         18.911565 10.1682516 14.592019 2.284799e-08  -5.588925
+B11=probl life_all time         12.448133  2.1945867  4.784594 1.820411e-08  -5.628256
+B10_5=lot energy_little t       20.373832 15.9473299 21.242803 1.032033e-08  -5.725379
+B10_1=full pep_little time      19.584245 13.0943672 18.145722 5.835348e-09  -5.821409
+B62=emot less_w.like_yes        21.537442 23.7746891 29.958309 3.103175e-09  -5.926045
+MAT_STAN=verylow                18.953488 11.9239210 17.073655 1.076026e-09  -6.097704
+B10_1=full pep_ none time       14.435696  4.0234089  7.564026 8.765399e-10  -6.130408
+B8=bodily pain_very sev         10.328638  1.6093636  4.228708 8.637356e-10  -6.132749
+B61=emot cut work_yes           20.393120 18.2150695 24.240619 5.278866e-10  -6.210582
+B10_7=worn out_most time        15.068493  4.8280907  8.695652 3.886548e-10  -6.258517
+B7=soc act_quite a bit          15.748031  5.8522312 10.085368 1.750441e-10  -6.381778
+B11=probl life_most time        13.970588  4.1697147  8.100060 3.743765e-11  -6.613880
+B12_1=sick easy_def. true       10.687023  2.0482809  5.201509 2.482271e-11  -6.674411
+B48=walkseg_much limited        17.271589 10.0950988 15.862617 1.312945e-12  -7.092938
+B9=pain act_quite a bit         16.865870  9.2904170 14.949375 8.826743e-13  -7.147663
+B10_9=tired_all time            11.714286  2.9992685  6.948581 4.390952e-13  -7.242930
+B12_3=expect_def.true           12.335958  3.4381858  7.564026 4.385986e-13  -7.243083
+B9=pain act_extremly            11.143695  2.7798098  6.769903 1.020701e-13  -7.438195
+B12_2=healthy_mostly false      17.129630 10.8266277 17.153067 4.683007e-14  -7.540464
+B52=health_wouldlike_yes        21.414538 31.8946598 40.420885 3.160738e-14  -7.591561
+B43=groc_much limited           17.081448 11.0460863 17.550129 1.558792e-14  -7.682610
+B46=bending_much limited        18.214936 14.6305779 21.798690 9.658438e-15  -7.743674
+B10_5=lot energy_none time      12.555066  4.1697147  9.013302 4.684269e-15  -7.835111
+B12_2=healthy_def. false        11.471322  3.3650329  7.961088 2.204023e-15  -7.929290
+B53=limited_kindwork_yes        20.011403 25.6766642 34.822315 3.037323e-17  -8.445120
+B54=health_diff work_yes        20.603015 29.9926847 39.507643 1.537146e-17  -8.524317
+B410=dress_limited              13.162393  5.6327725 11.614056 7.859630e-18  -8.601623
+B45=clim1_much limited          15.189873  8.7783467 15.683939 6.437602e-18  -8.624495
+B8=bodily pain_severe           13.905325  6.8763716 13.420687 1.421890e-18  -8.795676
+B49=walk1block_limited          13.662791  6.8763716 13.658924 1.300807e-19  -9.060310
+B42=mod phy_much limited        16.135458 11.8507681 19.932500 7.585790e-20  -9.118947
+B51=health_cut work_yes         19.056153 23.3357718 33.234068 1.693849e-20  -9.280059
+B2=muchworseothers               2.764977  0.4389173  4.308120 1.421834e-22  -9.776396
+B47=walk1km_much limited        15.647482 12.7286028 22.076633 2.737224e-24 -10.168633
+B41=hard phy_much limite        18.636614 24.7988296 36.112766 2.617234e-25 -10.394841
+B44=climstairs_much limt        15.410959 13.1675201 23.188406 8.554069e-27 -10.716093
+B3=much worse last y             6.697460  2.1214338  8.596387 2.737959e-29 -11.235225
+B2=worseothers                  11.904762  7.3152890 16.676593 3.237069e-31 -11.620639
+B12_4=excellent_def.false        8.682329  6.2179956 19.436172 5.113506e-56 -15.768645
+
+$category$health_poor
+                                  Cla/Mod    Mod/Cla    Global       p.value     v.test
+B12_4=excellent_def.false       64.147089 60.2109300 19.436172 1.014994e-258  34.359527
+B54=health_diff work_yes        42.864322 81.7833174 39.507643 1.001030e-218  31.568452
+B53=limited_kindwork_yes        44.583808 74.9760307 34.822315 1.416537e-198  30.064378
+B41=hard phy_much limite        42.990654 74.9760307 36.112766 1.116435e-184  28.981783
+B51=health_cut work_yes         44.563919 71.5244487 33.234068 4.535166e-182  28.774022
+B52=health_wouldlike_yes        39.587426 77.2770853 40.420885 3.511158e-164  27.306913
+B3=much worse last y            74.826790 31.0642378  8.596387 2.667913e-145  25.667918
+B44=climstairs_much limt        48.801370 54.6500479 23.188406 2.515892e-142  25.400093
+B47=walk1km_much limited        49.280576 52.5407478 22.076633 3.395660e-137  24.931431
+B42=mod phy_much limited        50.597610 48.7056568 19.932500 4.587176e-130  24.265048
+B2=worseothers                  54.285714 43.7200384 16.676593 1.344634e-128  24.125671
+B46=bending_much limited        46.265938 48.7056568 21.798690 6.117428e-109  22.174034
+B2=muchworseothers              86.635945 18.0249281  4.308120 5.007941e-102  21.445707
+B43=groc_much limited           49.208145 41.7066155 17.550129 1.135829e-100  21.299975
+B49=walk1block_limited          54.215116 35.7622244 13.658924 3.681277e-100  21.244818
+B8=bodily pain_severe           53.402367 34.6116970 13.420687  1.127277e-93  20.531464
+B9=pain act_extremly            69.501466 22.7229147  6.769903  1.438568e-91  20.294484
+B9=pain act_quite a bit         50.730412 36.6251198 14.949375  6.075554e-91  20.223546
+B61=emot cut work_yes           42.014742 49.1850431 24.240619  3.097560e-89  20.028681
+B410=dress_limited              54.700855 30.6807287 11.614056  5.041206e-85  19.539767
+B45=clim1_much limited          48.734177 36.9127517 15.683939  8.691663e-85  19.511942
+B62=emot less_w.like_yes        37.905898 54.8418025 29.958309  9.719950e-81  19.029487
+B48=walkseg_much limited        46.808511 35.8581016 15.862617  2.824562e-75  18.358469
+B10_5=lot energy_little t       41.962617 43.0488974 21.242803  3.254265e-74  18.225243
+B63=emot_workcareful_yes        37.787056 52.0613615 28.528886  5.294166e-74  18.198602
+B10_5=lot energy_none time      57.488987 25.0239693  9.013302  6.845179e-74  18.184520
+B12_3=expect_def.true           61.154856 22.3394056  7.564026  1.067111e-72  18.033309
+MAT_STAN=verylow                44.767442 36.9127517 17.073655  8.447954e-71  17.790000
+B12_2=healthy_def. false        59.351621 22.8187919  7.961088  1.229538e-70  17.768958
+B10_1=full pep_little time      43.654267 38.2550336 18.145722  6.293261e-70  17.677117
+C15=act-reading                 31.548673 68.3604986 44.867977  4.003346e-66  17.176193
+B10_8=happy_little time         46.258503 32.5982742 14.592019  2.005073e-65  17.082454
+SKOLA=no_school                 48.652932 29.4343241 12.527298  1.481375e-64  16.965380
+B11=probl life_most time        56.617647 22.1476510  8.100060  7.128638e-63  16.736298
+B10_9=tired_all time            59.714286 20.0383509  6.948581  4.803997e-62  16.622317
+B10_1=full pep_ none time       57.742782 21.0930010  7.564026  8.731584e-62  16.586461
+B10_7=worn out_most time        53.881279 22.6270374  8.695652  9.849308e-59  16.158779
+B7=soc act_quite a bit          50.590551 24.6404602 10.085368  4.105633e-57  15.927164
+B10_7=worn out_all time         64.393939 16.2991371  5.241215  9.335286e-57  15.875707
+Prihodi=to 1000 Kn)             45.705521 28.5714286 12.944213  1.332792e-54  15.561340
+B8=bodily pain_very sev         68.544601 13.9980825  4.228708  9.293084e-54  15.436557
+B12_2=healthy_mostly false      40.972222 33.9405561 17.153067  9.215158e-52  15.137128
+D4=any recipes-yes              25.621415 89.9328859 72.682152  1.077178e-51  15.126857
+B11=probl life_all time         64.315353 14.8609779  4.784594  1.847148e-51  15.091318
+B48=walkseg_limited             40.787949 33.7488015 17.133214  8.008379e-51  14.994232
+B12_1=sick easy_def. true       61.832061 15.5321189  5.201509  2.169577e-50  14.927911
+B10_9=tired_most time           48.133595 23.4899329 10.105221  6.271499e-49  14.701858
+B12_3=expect_mostly true        38.993711 35.6663471 18.939845  2.339575e-48  14.612448
+B45=clim1_limited               37.416904 37.7756472 20.905301  2.447549e-46  14.292200
+B10_4=calm_little time          37.835052 35.1869607 19.257495  9.772011e-44  13.868933
+B12_1=sick easy_mostly tru      42.391304 26.1744966 12.785388  1.698892e-41  13.493892
+B7=soc act_extremly             67.441860 11.1217641  3.414731  1.992767e-41  13.482127
+B10_6=down heart_most time      57.480315 13.9980825  5.042684  7.953402e-40  13.207391
+Edad_classe=66_75 a\xf1os       38.386308 30.1054650 16.239825  1.052272e-37  12.834391
+D13=hospitalized-yes            40.000000 27.2291467 14.095692  1.708304e-37  12.796808
+D14A=measured BP-yes            24.473889 90.3163950 76.414532  2.731401e-37  12.760302
+D1B=specialist-yes              27.463395 66.5388303 50.168751  5.838131e-33  11.958826
+B10_3=felt down_most time       57.416268 11.5052733  4.149295  1.427512e-32  11.884344
+Sexo_edad=f(66_75)              42.714571 20.5177373  9.946397  2.746249e-32  11.829545
+Edad_classe=76 y m\xe1s a\xf1os 46.015424 17.1620326  7.722851  1.084072e-31  11.713727
+B10_6=down heart_all time       67.175573  8.4372004  2.600754  2.927705e-31  11.629217
+D14B=blood/urine-yes            26.345019 72.7708533 57.196744  2.946110e-31  11.628682
+C13=alcohol-not now             45.595855 16.8744008  7.663292  1.639318e-30  11.481230
+D14D=control lung-yes           32.276423 38.0632790 24.419297  1.044831e-28  11.116329
+B10_6=down heart_good time      41.701245 19.2713327  9.569188  1.803090e-28  11.067526
+D1A=GP-yes                      23.739549 89.8370086 78.360135  4.712874e-27  10.771109
+B10_8=happy_none time           51.739130 11.4093960  4.566210  1.312581e-26  10.676404
+B10_3=felt down_all time        64.754098  7.5743049  2.422077  1.747355e-26  10.649802
+B10_3=felt down_good time       42.409639 16.8744008  8.239031  8.493023e-26  10.501598
+B43=groc_limited a littl        31.426269 37.3921381 24.637681  2.956649e-25  10.383209
+D1C=dentist-no                  26.397516 65.1965484 51.141553  1.029870e-24  10.263426
+C14=drink-99                    30.129125 40.2684564 27.675203  2.896306e-23   9.936213
+B10_2=nervous_all time          53.260870  9.3959732  3.652968  3.251723e-23   9.924671
+Sexo_edad=f(76+)                47.826087 11.6011505  5.022831  4.288759e-23   9.897017
+B10_2=nervous_most time         43.674699 13.9022052  6.591225  1.129787e-22   9.799648
+D14C=control teeth-no           26.403580 62.2243528 48.798888  1.555040e-22   9.767325
+C9=smoking-no                   24.604623 77.5647172 65.276951  7.211004e-22   9.610625
+B49=walk1block_much lim         36.152570 20.9012464 11.971412  5.617755e-21   9.396931
+B3=worse last y                 30.835487 34.3240652 23.049434  6.070344e-21   9.388773
+SKOLA=primary_school            31.479643 30.3930968 19.992059  1.110571e-19   9.077539
+B10_7=worn out_good time        32.038835 28.4755513 18.403812  1.513101e-19   9.043806
+Edad_classe=56_65 a\xf1os       32.330827 24.7363375 15.842764  2.971510e-17   8.447679
+D3=nurce-yes                    39.275766 13.5186961  7.127258  5.965194e-17   8.365912
+B11=probl life_some time        28.763040 37.0086290 26.642843  1.091741e-16   8.294357
+B10_9=tired_good time           30.936819 27.2291467 18.225134  3.927418e-16   8.140779
+B7=soc act_moderately           32.031250 23.5858102 15.247171  8.376442e-16   8.048574
+B10_3=felt down_some time       29.478673 29.8178332 20.945007  1.837756e-14   7.661499
+B10_2=mervous_good time         32.011331 21.6682646 14.016280  2.164214e-14   7.640475
+B410=dress_much limited         33.275261 18.3125599 11.395672  6.480411e-14   7.497989
+Sexo_edad=f(56_65)              34.745763 15.7238734  9.370657  8.621732e-14   7.460466
+B8=bodily pain_moderate         27.835881 33.1735379 24.677387  3.011322e-12   6.977195
+C13=alcohol-never               28.884462 27.8044104 19.932500  4.182895e-12   6.930860
+Prihodi=(1000_1500)             31.770833 17.5455417 11.435378  2.986921e-11   6.647214
+D14E=PAP test(female)-no        25.951557 43.1447747 34.425253  4.901380e-11   6.573901
+B10_4=calm_none time            38.247012  9.2042186  4.983125  6.240795e-11   6.537854
+C11=ever smoked-no              24.965390 51.8696069 43.021640  1.102103e-10   6.452238
+B42=mod phy_ limited a          26.929012 33.4611697 25.729601  3.325863e-10   6.282773
+C10=cigarettes-none             23.930384 63.2790029 54.754814  4.247574e-10   6.244647
+B46=bending_lim a littl         26.549964 34.8993289 27.218582  8.121806e-10   6.142529
+Sexo_edad=m(76+)                42.647059  5.5608821  2.700020  4.757365e-09   5.855444
+B12_4=excellent_mostly fal      26.075949 29.6260786 23.525908  3.124726e-07   5.115765
+B10_6=down heart_some time      25.393419 34.0364334 27.754616  5.403799e-07   5.011391
+B12_1=sick easy_don't know      25.407407 32.8859060 26.801668  9.364975e-07   4.904533
+B9=pain act_moderate            27.440633 19.9424736 15.048640  1.401168e-06   4.824838
+Sexo_edad=m(66_75)              31.545741  9.5877277  6.293429  2.804860e-06   4.684615
+MAT_STAN=low                    25.537886 26.1744966 21.222950  1.623665e-05   4.311206
+C10=cigarettes-99               28.037383 14.3815916 10.621402  1.841169e-05   4.283330
+B10_8=happy_some time           24.140169 35.6663471 30.593607  7.756820e-05   3.951792
+Sexo_edad=m(56_65)              28.834356  9.0124640  6.472106  3.106748e-04   3.606233
+B10_4=calm_some time            23.908216 30.9683605 26.821521  7.842744e-04   3.358286
+D14F=breast (female)-no         22.892134 46.5963567 42.148104  1.128326e-03   3.256405
+Sex=female                      22.178606 65.0047939 60.690887  1.296447e-03   3.216765
+B47=walk1km_limited             24.263959 22.9146692 19.555291  2.453576e-03   3.029009
+D5=should drug-no               26.989619  7.4784276  5.737542  8.359984e-03   2.637174
+B44=climstairs_lim_littl        23.261206 28.8590604 25.689895  9.109488e-03   2.607918
+D14C=control teeth-99           25.762712  7.2866731  5.856661  3.080785e-02   2.159546
+D14F=breast (female)-99         19.364937 41.5148610 44.391503  3.559145e-02  -2.101564
+Prihodi=(2500_3000)             16.829746  8.2454458 10.144928  2.036777e-02  -2.319503
+C11=ever smoked-yes             18.781095 28.9549377 31.923764  2.032459e-02  -2.320301
+B10_1=full pep_some time        18.395303 27.0373921 30.434783  7.034592e-03  -2.695202
+D14A=measured BP-99             11.851852  1.5340364  2.680167  6.959656e-03  -2.698769
+B10_2=nervous_some time         18.672840 34.8034516 38.594401  4.585589e-03  -2.834790
+D1B=specialist-99               13.919414  3.6433365  5.419893  3.176646e-03  -2.950106
+B3=better last y                15.650407  7.3825503  9.767719  2.815595e-03  -2.987185
+D6=explain drug-unknown         11.392405  1.7257910  3.136788  1.947673e-03  -3.098098
+Sex=male                        18.434343 34.9952061 39.309113  1.296447e-03  -3.216765
+C13=alcohol-every day           16.761042 14.1898370 17.530276  1.187474e-03  -3.241872
+B7=soc act_slightely            17.180205 17.6414190 21.262656  1.130655e-03  -3.255820
+Prihodi=(3000_3500)             14.105793  5.3691275  7.881676  4.547725e-04  -3.506072
+C14=drink-wine                  18.290927 36.5292426 41.353981  3.607581e-04  -3.567242
+C13=alcohol-1\xf32 week         14.925373  7.6701822 10.641255  3.162470e-04  -3.601615
+D5=should drug-unknownn         10.695187  1.9175455  3.712527  2.481502e-04  -3.664161
+C10=cigarettes-20 more          15.097403  8.9165868 12.229502  1.600363e-04  -3.774955
+D14D=control lung-99            14.000000  6.7114094  9.926544  5.186016e-05  -4.047082
+C14=drink-spirit                13.733906  6.1361457  9.251539  5.007936e-05  -4.055256
+C14=drink-beer                  16.270567 17.0661553 21.719277  3.016283e-05  -4.172233
+D14B=blood/urine-99             10.756972  2.5886865  4.983125  2.113059e-05  -4.252597
+C13=alcohol-very rarely         16.334661 19.6548418 24.915624  7.106435e-06  -4.490475
+Sexo_edad=m(36_45)              10.958904  3.0680729  5.797101  6.574198e-06  -4.507028
+B10_4=calm_all time             10.509554  3.1639501  6.233869  8.559508e-07  -4.922158
+SKOLA=high_school               10.479042  3.3557047  6.630931  3.318635e-07  -5.104390
+Prihodi=(4000_5000)             12.592593  6.5196548 10.720667  2.382457e-07  -5.166714
+B10_2=nervous_none time         12.310606  6.2320230 10.482430  1.210588e-07  -5.291890
+Sexo_edad=f(36-45)              11.603376  5.2732502  9.410363  5.396277e-08  -5.437733
+C13=alcohol-sometime            14.376321 13.0393097 18.781020  3.707513e-08  -5.504246
+C11=ever smoked-sometime        13.068182  8.8207095 13.976573  1.799051e-08  -5.630292
+C9=smoking-sometimes            10.688836  4.3144775  8.358150  1.565626e-08  -5.654212
+B3=much better last y            7.723577  1.8216683  4.883859  1.445246e-08  -5.667940
+D14E=PAP test(female)-yes       14.539007 15.7238734 22.394282  2.314306e-09  -5.974053
+Prihodi=(3500_4000)             10.321101  4.3144775  8.655946  2.035672e-09  -5.994935
+Prihodi=(5000_6000)              8.882521  2.9721956  6.928727  8.314638e-10  -6.138802
+B10_5=lot energy_some time      14.728097 18.6960690 26.285487  1.395509e-10  -6.416382
+B8=bodily pain_mild             12.204234  9.3959732 15.942029  9.869427e-12  -6.808394
+C9=smoking-yes                  14.057751 17.7372963 26.126663  9.739011e-13  -7.134146
+C15=act-sport                    2.717391  0.4793864  3.652968  3.618820e-13  -7.269103
+Edad_classe=36_45 a\xf1os       11.357702  8.3413231 15.207465  2.268316e-13  -7.331948
+B10_9=tired_none time            4.982206  1.3422819  5.578717  2.248380e-14  -7.635562
+B10_8=happy_all time             7.900677  3.3557047  8.794918  2.135234e-14  -7.642211
+D14D=control lung-no            17.417599 55.2253116 65.654159  4.097837e-15  -7.851899
+B12_3=expect_don't know         15.174507 28.7631831 39.249553  2.708460e-15  -7.903653
+B2=muchbetterothers              3.891051  0.9587728  5.102243  2.258828e-15  -7.926239
+MAT_STAN=overaverage             9.375000  5.4650048 12.070677  2.202981e-15  -7.929349
+B10_1=full pep_all time          6.987952  2.7804410  8.239031  1.390814e-15  -7.986271
+B10_3=felt down_little tim      13.543860 18.5043145 28.290649  4.347852e-16  -8.128458
+D3=nurce-no                     19.249838 85.6184084 92.098471  4.155259e-16  -8.133949
+C10=cigarettes-less 20          12.411348 13.4228188 22.394282  3.790735e-16  -8.145066
+Prihodi=(more than 6000)         7.478632  3.3557047  9.291245  3.028905e-16  -8.172170
+Sexo_edad=m(26_35)               5.491329  1.8216683  6.869168  2.575912e-16  -8.191686
+B10_5=lot energy_all time        7.291667  3.3557047  9.529482  3.732649e-17  -8.421006
+B12_3=expect_mostly false        9.908735  7.2866731 15.227318  9.524948e-18  -8.579545
+SKOLA=faculty_PhD_MSc            7.456979  3.7392138 10.383165  3.294011e-18  -8.700852
+B10_7=worn out_none time         7.251908  3.6433365 10.403018  7.610889e-19  -8.865577
+B12_4=excellent_don't know       7.586207  4.2186002 11.514791  8.287779e-20  -9.109349
+B12_1=sick easy_mostly fal      12.536232 16.5867689 27.397260  6.912277e-20  -9.129019
+Sexo_edad=m(18_25)               1.937984  0.4793864  5.122096  2.968701e-20  -9.220083
+B11=probl life_little t         11.614498 13.5186961 24.101648  5.286204e-21  -9.403332
+C15=act-jogging                  9.449761  7.5743049 16.597181  3.662260e-21  -9.441858
+B9=pain act_little bit          11.031390 11.7929051 22.136192  1.651042e-21  -9.524961
+C15=act-walking                 12.775616 18.8878236 30.613460  1.420058e-21  -9.540602
+B10_4=calm_good time            11.831789 15.9156280 27.853881  7.471550e-24 -10.070345
+D14B=blood/urine-no             13.490814 24.6404602 37.820131  6.506433e-24 -10.083939
+B10_4=calm_most time             7.754011  5.5608821 14.850109  3.835791e-25 -10.358335
+D1B=specialist-no               13.902548 29.8178332 44.411356  3.358656e-27 -10.802251
+B12_2=healthy_def. true          5.517241  3.0680729 11.514791  2.897809e-27 -10.815791
+D1A=GP-no                        9.233792  9.0124640 20.210443  2.260335e-27 -10.838547
+B10_7=worn out_some time        12.745098 22.4352828 36.450268  1.832810e-27 -10.857713
+B10_2=nervous_little time       10.871184 13.9980825 26.662696  9.934362e-28 -10.913511
+D14C=control teeth-yes          13.922942 30.4889741 45.344451  5.812581e-28 -10.962114
+D1C=dentisit-yes                13.565536 28.3796740 43.319436  1.052096e-28 -11.115711
+Sexo_edad=f(26_35)               3.901437  1.8216683  9.668453  7.847064e-29 -11.141852
+Sexo_edad=f(18_25)               1.837270  0.6711409  7.564026  3.066827e-30 -11.426953
+B2=betterothers                  7.866379  6.9990412 18.423665  3.055321e-31 -11.625574
+B10_8=happy_most time            7.013301  5.5608821 16.418503  1.352062e-31 -11.694988
+B10_6=down heart_none time       8.590103  8.8207095 21.262656  1.629144e-32 -11.873299
+B10_5=lot energy_most time       5.686546  3.9309684 14.314076  1.928078e-33 -12.050487
+B10_1=full pep_most time         5.270864  3.4515820 13.559659  1.371746e-33 -12.078515
+B10_8=happy_good time            9.436955 11.4093960 25.034743  6.688108e-34 -12.137446
+D14A=measured BP-no              8.072175  8.1495686 20.905301  7.679517e-35 -12.313323
+D13=hospitalized-no             17.487107 71.5244487 84.693270  1.144816e-35 -12.465962
+B10_9=tired_little time          6.144578  4.8897411 16.478062  2.431408e-36 -12.588866
+B8=bodily pain_verymild          5.198358  3.6433365 14.512607  1.616961e-36 -12.621028
+B41=hard phy_limited a           8.641975 10.0671141 24.121501  2.213554e-37 -12.776666
+B12_4=excellent_def.true         3.322259  1.9175455 11.951558  4.730605e-39 -13.072467
+MAT_STAN=average                13.110125 31.1601151 49.215803  5.883342e-40 -13.230069
+B12_3=expect_def_ false          6.471816  5.9443912 19.019257  1.548640e-40 -13.330016
+SKOLA=grammar_school            11.243523 20.8053691 38.316458  1.506002e-41 -13.502772
+B10_5=lot energy_good time       6.275304  5.9443912 19.614850  2.756134e-43 -13.794353
+B10_1=full pep_good time         6.930693  7.3825503 22.056780  1.015750e-44 -14.030401
+B10_7=worn out_little time       6.488550  6.5196548 20.806035  8.352693e-45 -14.044268
+Edad_classe=26_35 a\xf1os        4.561825  3.6433365 16.537622  2.869640e-46 -14.281117
+B10_6=down heart_little t        9.465021 15.4362416 33.770101  1.812525e-49 -14.785667
+B10_9=tired_some time           11.167985 23.0105465 42.664284  1.286162e-49 -14.808747
+Edad_classe=18_25 a\xf1os        1.877934  1.1505273 12.686123  2.500509e-51 -15.071324
+D4=any recipes-no                7.078987  9.1083413 26.642843  7.968984e-55 -15.594221
+B10_3=felt down_none time        9.055770 15.7238734 35.953941  4.090089e-58 -16.070765
+B12_1=sick easy_def. false       6.566738  8.8207095 27.814175  9.495773e-63 -16.719218
+B12_2=healthy_mostly true        8.186813 14.2857143 36.132619  4.151387e-68 -17.439298
+B63=emot_work careful_no        13.888889 47.9386385 71.471114  5.294166e-74 -18.198602
+B2=eqaulothers                  11.286277 30.2013423 55.409966  4.625162e-76 -18.456480
+B62=emot less_w.like_no         13.350340 45.1581975 70.041691  9.719950e-81 -19.029487
+B11=probl life_none time         7.096070 12.4640460 36.370856  2.910180e-82 -19.212481
+B41=hard phy_not at all          7.788318 14.9568552 39.765734  1.492698e-83 -19.366054
+B7=soc act_not at all            9.531374 23.0105465 49.990073  7.085231e-89 -19.987430
+B61=emot cut work_no            13.888889 50.8149569 75.759381  3.097560e-89 -20.028681
+B8=bodily pain_none              3.938731  5.1773730 27.218582  1.671655e-90 -20.173559
+B3=equal last y                  9.796673 25.4074784 53.702601  2.660975e-96 -20.823320
+B410=dress_no at all            13.718412 51.0067114 76.990272  4.710702e-99 -21.124754
+B49=walk1block_notat all        12.066204 43.3365292 74.369664 4.101519e-132 -24.458350
+B47=walk1km_not at all           8.707483 24.5445829 58.368076 1.368021e-137 -24.967812
+B9=pain act_not at all           4.492754  8.9165868 41.095890 5.525904e-145 -25.639577
+B12_4=excellent_mostly t         2.483737  4.0268456 33.571570 1.575257e-145 -25.688405
+B46=bending_not at all           6.658879 16.3950144 50.982728 1.621550e-148 -25.954406
+B44=climstairs_notat all         6.679612 16.4908917 51.121699 9.481615e-149 -25.975043
+B42=mod phy_ not at all          6.795762 17.8331735 54.337900 4.980874e-163 -27.209743
+B52=health_would like_no         7.897368 22.7229147 59.579115 3.511158e-164 -27.306913
+B43=groc_ not at all             7.486264 20.9012464 57.812190 6.433242e-165 -27.368907
+B48=walkseg_not at all           9.392593 30.3930968 67.004169 1.122734e-166 -27.516231
+B45=clim1_not at all             8.265498 25.3116012 63.410760 5.153541e-177 -28.367080
+B51=health_cut work_no           8.831401 28.4755513 66.765932 4.535166e-182 -28.774022
+B53=limited_king work_no         7.950046 25.0239693 65.177685 1.416537e-198 -30.064378
+B54=health_diff work_no          6.235642 18.2166826 60.492357 1.001030e-218 -31.568452
+
+$category$`health_very good`
+                                   Cla/Mod    Mod/Cla    Global       p.value     v.test
+B12_4=excellent_mostly t        32.6434063 66.2665066 33.571570 3.631428e-100  21.245458
+B44=climstairs_notat all        26.2135922 81.0324130 51.121699  6.849857e-85  19.524111
+B54=health_diff work_no         23.9908106 87.7551020 60.492357  3.898891e-79  18.835032
+B43=groc_ not at all            24.2101648 84.6338535 57.812190  5.872125e-73  18.066301
+B42=mod phy_ not at all         24.6985751 81.1524610 54.337900  1.040066e-69  17.648765
+B45=clim1_not at all            22.9492799 87.9951981 63.410760  5.523574e-67  17.290743
+B46=bending_not at all          25.1947040 77.6710684 50.982728  5.959271e-67  17.286366
+B47=walk1km_not at all          23.6394558 83.4333733 58.368076  1.031911e-63  16.850980
+B52=health_would like_no        23.3922026 84.2737095 59.579115  6.652544e-63  16.740413
+B53=limited_king work_no        22.4185196 88.3553421 65.177685  2.559079e-61  16.521740
+B41=hard phy_not at all         26.9595607 64.8259304 39.765734  1.152274e-57  16.006434
+B48=walkseg_not at all          21.9555556 88.9555822 67.004169  5.411720e-57  15.909880
+B51=health_cut work_no          21.9446922 88.5954382 66.765932  5.861968e-56  15.760014
+B9=pain act_not at all          26.0386473 64.7058824 41.095890  3.660353e-51  15.046129
+B49=walk1block_notat all        20.0213561 90.0360144 74.369664  1.661277e-34  12.250907
+Edad_classe=26_35 a\xf1os       31.5726291 31.5726291 16.537622  9.523388e-33  11.918119
+B3=equal last y                 22.1441774 71.9087635 53.702601  8.857156e-32  11.730844
+Edad_classe=18_25 a\xf1os       33.8028169 25.9303721 12.686123  6.802107e-31  11.557030
+B61=emot cut work_no            19.6802935 90.1560624 75.759381  2.261712e-30  11.453373
+B11=probl life_none time        24.1266376 53.0612245 36.370856  4.808734e-27  10.769256
+B8=bodily pain_none             25.8935084 42.6170468 27.218582  5.279204e-26  10.546380
+B10_5=lot energy_good time      27.6315789 32.7731092 19.614850  2.841125e-23   9.938129
+B62=emot less_w.like_no         19.7845805 83.7935174 70.041691  2.938715e-23   9.934764
+B410=dress_no at all            19.1851470 89.3157263 76.990272  4.542444e-23   9.891266
+B12_2=healthy_mostly true       23.4065934 51.1404562 36.132619  2.935269e-22   9.702734
+B8=bodily pain_verymild         29.6853625 26.0504202 14.512607  3.577804e-22   9.682522
+B10_6=down heart_little t       23.7507349 48.4993998 33.770101  5.747000e-22   9.633962
+Sexo_edad=f(18_25)              35.9580052 16.4465786  7.564026  7.843158e-22   9.601969
+B10_1=full pep_good time        26.3726373 35.1740696 22.056780  1.168525e-21   9.560798
+D14C=control teeth-yes          22.0227671 60.3841537 45.344451  1.624064e-21   9.526672
+B10_1=full pep_most time        29.7218155 24.3697479 13.559659  1.161671e-20   9.320158
+B10_7=worn out_little time      26.4312977 33.2533013 20.806035  2.235801e-20   9.250435
+B63=emot_work careful_no        19.4166667 83.9135654 71.471114  8.715799e-20   9.103884
+Sexo_edad=f(26_35)              32.0328542 18.7274910  9.668453  4.664680e-19   8.919957
+SKOLA=faculty_PhD_MSc           31.1663480 19.5678271 10.383165  1.366655e-18   8.800124
+B10_9=tired_little time         27.3493976 27.2509004 16.478062  3.831139e-18   8.683695
+MAT_STAN=overaverage            29.6052632 21.6086435 12.070677  6.169647e-18   8.629360
+D4=any recipes-no               24.2175857 39.0156062 26.642843  1.059572e-17   8.567281
+B12_3=expect_def_ false         26.0960334 30.0120048 19.019257  3.104986e-17   8.442546
+D1C=dentisit-yes                21.5857012 56.5426170 43.319436  5.002248e-17   8.386642
+B12_1=sick easy_def. false      23.7687366 39.9759904 27.814175  7.978374e-17   8.331560
+Prihodi=(more than 6000)        30.9829060 17.4069628  9.291245  3.208569e-16   8.165217
+B10_3=felt down_none time       22.3081171 48.4993998 35.953941  4.224182e-16   8.131956
+B7=soc act_not at all           20.4527403 61.8247299 49.990073  6.308869e-14   7.501506
+B10_8=happy_good time           23.3941316 35.4141657 25.034743  2.099555e-13   7.342299
+SKOLA=grammar_school            21.3471503 49.4597839 38.316458  8.049766e-13   7.160305
+B2=eqaulothers                  19.8495163 66.5066026 55.409966  1.085603e-12   7.119194
+B10_2=nervous_little time       22.7848101 36.7346939 26.662696  2.448982e-12   7.006188
+D13=hospitalized-no             17.9793718 92.0768307 84.693270  4.819578e-12   6.910791
+Sexo_edad=m(26_35)              30.9248555 12.8451381  6.869168  5.871012e-12   6.882745
+B10_5=lot energy_most time      25.6588072 22.2088836 14.314076  1.247006e-11   6.774658
+B10_4=calm_good time            22.3806130 37.6950780 27.853881  1.291433e-11   6.769595
+D14A=measured BP-no             23.3618234 29.5318127 20.905301  9.303142e-11   6.477862
+B12_2=healthy_def. true         25.8620690 18.0072029 11.514791  1.115955e-09   6.091875
+D1A=GP-no                       22.8880157 27.9711885 20.210443  3.417764e-09   5.910160
+C15=act-walking                 21.2710765 39.3757503 30.613460  3.678964e-09   5.898017
+Sexo_edad=m(18_25)              30.6201550  9.4837935  5.122096  8.385064e-09   5.760529
+D14B=blood/urine-no             20.4199475 46.6986795 37.820131  1.029335e-08   5.725823
+B10_8=happy_most time           23.4582830 23.2893157 16.418503  1.686836e-08   5.641389
+Prihodi=(5000_6000)             28.0802292 11.7647059  6.928727  1.901440e-08   5.620737
+B10_9=tired_some time           19.7766403 51.0204082 42.664284  1.097260e-07   5.309833
+B10_4=calm_most time            23.3957219 21.0084034 14.850109  1.413931e-07   5.263429
+B2=betterothers                 22.5215517 25.0900360 18.423665  1.432356e-07   5.261049
+B12_1=sick easy_mostly fal      21.0144928 34.8139256 27.397260  2.580240e-07   5.151781
+B11=probl life_little t         21.3344316 31.0924370 24.101648  4.502517e-07   5.046383
+B10_3=felt down_little tim      20.7719298 35.5342137 28.290649  6.046191e-07   4.989736
+D14E=PAP test(female)-yes       21.4539007 29.0516206 22.394282  8.540135e-07   4.922601
+Prihodi=(3500_4000)             25.0000000 13.0852341  8.655946  2.260045e-06   4.728662
+C10=cigarettes-less 20          21.1879433 28.6914766 22.394282  3.131222e-06   4.662019
+MAT_STAN=average                18.9592578 56.4225690 49.215803  5.250555e-06   4.554519
+D1B=specialist-no               19.1774698 51.5006002 44.411356  7.051564e-06   4.492126
+D14D=control lung-no            18.2038101 72.2689076 65.654159  8.317643e-06   4.456841
+C13=alcohol-very rarely         20.5577689 30.9723890 24.915624  1.423335e-05   4.340230
+B12_4=excellent_def.true        22.7574751 16.4465786 11.951558  2.457997e-05   4.218622
+B12_3=expect_mostly false       21.9035202 20.1680672 15.227318  2.519365e-05   4.213058
+C9=smoking-sometimes            23.9904988 12.1248499  8.358150  3.995625e-05   4.107732
+B10_6=down heart_none time      20.6349206 26.5306122 21.262656  6.833364e-05   3.982014
+C14=drink-spirit                23.1759657 12.9651861  9.251539  1.010990e-04   3.887939
+Prihodi=(4000_5000)             22.5925926 14.6458583 10.720667  1.114703e-04   3.864164
+C15=act-jogging                 20.8133971 20.8883553 16.597181  3.750135e-04   3.557071
+C15=act-sport                   26.6304348  5.8823529  3.652968  4.211901e-04   3.526438
+C14=drink-beer                  19.8354662 26.0504202 21.719277  1.103130e-03   3.262811
+D14B=blood/urine-99             23.9043825  7.2028812  4.983125  2.089069e-03   3.077269
+B3=much better last y           23.9837398  7.0828331  4.883859  2.097063e-03   3.076130
+D5=should drug-unknownn         25.1336898  5.6422569  3.712527  2.247074e-03   3.055471
+C11=ever smoked-sometime        20.5965909 17.4069628 13.976573  2.268406e-03   3.052636
+B2=muchbetterothers             23.7354086  7.3229292  5.102243  2.306992e-03   3.047571
+Sexo_edad=m(36_45)              22.9452055  8.0432173  5.797101  3.531169e-03   2.917264
+B10_7=worn out_some time        18.5185185 40.8163265 36.450268  4.394763e-03   2.848342
+B7=soc act_slightely            19.3277311 24.8499400 21.262656  6.319391e-03   2.730732
+C13=alcohol-sometime            19.5560254 22.2088836 18.781020  6.361959e-03   2.728518
+B10_7=worn out_none time        20.8015267 13.0852341 10.403018  6.818779e-03   2.705568
+D14D=control lung-99            20.8000000 12.4849940  9.926544  8.416969e-03   2.634869
+SKOLA=high_school               21.5568862  8.6434574  6.630931  1.321447e-02   2.477936
+B10_8=happy_all time            20.7674944 11.0444178  8.794918  1.442711e-02   2.446449
+D3=nurce-no                     16.9001940 94.1176471 92.098471  1.519641e-02   2.427664
+Edad_classe=36_45 a\xf1os       19.5822454 18.0072029 15.207465  1.543220e-02   2.422074
+D14A=measured BP-99             24.4444444  3.9615846  2.680167  1.699478e-02   2.386821
+B12_3=expect_don't know         18.0070814 42.7370948 39.249553  2.458927e-02   2.247795
+B9=pain act_little bit          18.7443946 25.0900360 22.136192  2.613883e-02   2.224143
+C9=smoking-yes                  18.3890578 29.0516206 26.126663  3.691004e-02   2.086758
+Sex=male                        17.8787879 42.4969988 39.309113  3.988736e-02   2.054914
+D14F=breast (female)-99         17.7101968 47.5390156 44.391503  4.577347e-02   1.997476
+B10_5=lot energy_all time       19.7916667 11.4045618  9.529482  4.756660e-02   1.981220
+Sex=female                      15.6689565 57.5030012 60.690887  3.988736e-02  -2.054914
+D14C=control teeth-99           12.2033898  4.3217287  5.856661  3.421708e-02  -2.117504
+C11=ever smoked-no              15.2284264 39.6158463 43.021640  2.950752e-02  -2.176639
+D5=should drug-yes              16.1587371 88.4753902 90.549931  2.824546e-02  -2.193860
+Prihodi=(2000_2500)             12.7862595  8.0432173 10.403018  1.248301e-02  -2.498188
+SKOLA=handicraft_school         13.0718954  9.6038415 12.150089  1.196538e-02  -2.513164
+C10=cigarettes-99               12.7102804  8.1632653 10.621402  9.861120e-03  -2.580662
+C10=cigarettes-none             15.2646846 50.5402161 54.754814  7.599736e-03  -2.669354
+Edad_classe=46_55 a\xf1os       13.2241814 12.6050420 15.763351  5.243133e-03  -2.791704
+D3=nurce-yes                    11.4206128  4.9219688  7.127258  5.033965e-03  -2.804852
+B10_4=calm_some time            13.9156181 22.5690276 26.821521  2.143915e-03  -3.069536
+B10_1=full pep_some time        14.0900196 25.9303721 30.434783  1.783793e-03  -3.124051
+B10_8=happy_some time           14.0817651 26.0504202 30.593607  1.653174e-03  -3.146358
+Sexo_edad=m(76+)                 7.3529412  1.2004802  2.700020  1.618451e-03  -3.152561
+Sexo_edad=f(46_55)              11.4519427  6.7226891  9.708160  9.588835e-04  -3.302321
+B410=dress_much limited         11.4982578  7.9231693 11.395672  3.468043e-04  -3.577569
+B12_2=healthy_don't know        13.4839650 22.2088836 27.238436  2.914690e-04  -3.622766
+C13=alcohol-never               12.1513944 14.6458583 19.932500  1.728194e-05  -4.297392
+C9=smoking-no                   14.8418491 58.5834334 65.276951  1.108491e-05  -4.394850
+MAT_STAN=low                    12.1608980 15.6062425 21.222950  8.267253e-06  -4.458144
+B10_6=down heart_all time        3.8167939  0.6002401  2.600754  5.624180e-06  -4.540047
+B10_3=felt down_all time         3.2786885  0.4801921  2.422077  4.077311e-06  -4.607402
+B10_2=nervous_all time           4.8913043  1.0804322  3.652968  1.080256e-06  -4.876425
+B49=walk1block_much lim          9.9502488  7.2028812 11.971412  1.034377e-06  -4.884983
+B10_4=calm_none time             6.3745020  1.9207683  4.983125  9.741015e-07  -4.896799
+B7=soc act_moderately           10.6770833  9.8439376 15.247171  7.213198e-07  -4.955534
+B10_6=down heart_some time      12.3748212 20.7683073 27.754616  4.671093e-07  -5.039353
+Prihodi=(1500_2000)              9.0729783  5.5222089 10.065515  3.902870e-07  -5.073635
+B10_2=mervous_good time         10.0566572  8.5234094 14.016280  1.506816e-07  -5.251725
+D1B=specialist-yes              13.7316977 41.6566627 50.168751  7.273948e-08  -5.384269
+C13=alcohol-not now              7.5129534  3.4813926  7.663292  7.141729e-08  -5.387568
+Sexo_edad=m(66_75)               6.6246057  2.5210084  6.293429  7.075616e-08  -5.389240
+C14=drink-99                    11.9799139 20.0480192 27.675203  3.352617e-08  -5.521948
+Sexo_edad=m(56_65)               6.4417178  2.5210084  6.472106  2.317229e-08  -5.586477
+D14E=PAP test(female)-no        12.3990773 25.8103241 34.425253  5.492546e-09  -5.831518
+B12_1=sick easy_don't know      11.4814815 18.6074430 26.801668  1.772163e-09  -6.017422
+D1A=GP-yes                      14.7960476 70.1080432 78.360135  8.447920e-10  -6.136274
+B8=bodily pain_very sev          3.2863850  0.8403361  4.228708  6.232549e-10  -6.184434
+B10_9=tired_good time            9.8039216 10.8043217 18.225134  1.761440e-10  -6.380819
+B7=soc act_extremly              1.7441860  0.3601441  3.414731  1.496541e-10  -6.405727
+B12_1=sick easy_def. true        3.8167939  1.2004802  5.201509  5.667318e-11  -6.552259
+B10_3=felt down_some time       10.1421801 12.8451381 20.945007  4.902686e-11  -6.573861
+B10_4=calm_little time           9.7938144 11.4045618 19.257495  3.932054e-11  -6.606616
+B10_3=felt down_most time        2.3923445  0.6002401  4.149295  2.500324e-11  -6.673348
+Prihodi=(1000_1500)              7.4652778  5.1620648 11.435378  1.486842e-11  -6.749179
+B11=probl life_all time          2.9045643  0.8403361  4.784594  7.363894e-12  -6.850409
+Sexo_edad=f(76+)                 3.1620553  0.9603842  5.022831  7.060530e-12  -6.856425
+D14D=control lung-yes           10.3252033 15.2460984 24.419297  2.190549e-12  -7.021783
+D14B=blood/urine-yes            13.3287053 46.0984394 57.196744  1.846775e-12  -7.045590
+D14A=measured BP-yes            14.3933489 66.5066026 76.414532  9.348045e-13  -7.139780
+B10_2=nervous_most time          4.2168675  1.6806723  6.591225  9.149702e-13  -7.142727
+B10_8=happy_none time            2.1739130  0.6002401  4.566210  7.558910e-13  -7.168925
+B10_7=worn out_most time         5.4794521  2.8811525  8.695652  3.321219e-13  -7.280688
+B12_2=healthy_def. false         4.9875312  2.4009604  7.961088  2.695088e-13  -7.308815
+Edad_classe=76 y m\xe1s a\xf1os  4.6272494  2.1608643  7.722851  8.599774e-14  -7.460801
+D13=hospitalized-yes             7.4647887  6.3625450 14.095692  3.109345e-14  -7.593685
+B12_1=sick easy_mostly tru       6.9875776  5.4021609 12.785388  2.748851e-14  -7.609628
+B10_9=tired_most time            5.6974460  3.4813926 10.105221  1.160982e-14  -7.720254
+B10_6=down heart_good time       5.3941909  3.1212485  9.569188  9.969041e-15  -7.739651
+B10_7=worn out_good time         8.5221143  9.4837935 18.403812  9.869354e-15  -7.740928
+B10_9=tired_all time             3.4285714  1.4405762  6.948581  2.016764e-15  -7.940310
+B10_6=down heart_most time       1.5748031  0.4801921  5.042684  1.186088e-15  -8.005887
+B10_3=felt down_good time        4.0963855  2.0408163  8.239031  3.687796e-16  -8.148397
+B7=soc act_quite a bit           5.1181102  3.1212485 10.085368  2.423776e-16  -8.199009
+B10_7=worn out_all time          1.5151515  0.4801921  5.241215  2.048810e-16  -8.219191
+B47=walk1km_limited              8.3248731  9.8439376 19.555291  1.680986e-16  -8.242891
+B2=muchworseothers               0.4608295  0.1200480  4.308120  1.679328e-16  -8.243009
+Sexo_edad=f(56_65)               4.6610169  2.6410564  9.370657  1.515573e-16  -8.255271
+D1C=dentist-no                  12.3059006 38.0552221 51.141553  1.120056e-16  -8.291313
+B9=pain act_extremly             2.6392962  1.0804322  6.769903  2.906465e-17  -8.450263
+B45=clim1_much limited           6.9620253  6.6026411 15.683939  9.917637e-18  -8.574896
+D14C=control teeth-no           11.9609439 35.2941176 48.798888  8.804264e-18  -8.588591
+B11=probl life_most time         3.4313725  1.6806723  8.100060  6.784532e-18  -8.618486
+D4=any recipes-yes              13.6574706 60.0240096 72.682152  3.220030e-18  -8.703429
+B48=walkseg_much limited         6.8836045  6.6026411 15.862617  3.021901e-18  -8.710630
+B9=pain act_moderate             6.5963061  6.0024010 15.048640  2.444083e-18  -8.734652
+B42=mod phy_ limited a           9.1049383 14.1656663 25.729601  1.594936e-18  -8.782772
+SKOLA=primary_school             7.7457795  9.3637455 19.992059  2.263948e-19  -8.999671
+B46=bending_lim a littl          9.1174325 15.0060024 27.218582  9.485109e-20  -9.094696
+B63=emot_workcareful_yes         9.3249826 16.0864346 28.528886  8.715799e-20  -9.103884
+B12_3=expect_def.true            2.0997375  0.9603842  7.564026  3.634366e-21  -9.442659
+Sexo_edad=f(66_75)               3.3932136  2.0408163  9.946397  4.155867e-22  -9.667202
+B10_1=full pep_ none time        1.8372703  0.8403361  7.564026  3.515422e-22  -9.684319
+Prihodi=to 1000 Kn)              4.7546012  3.7214886 12.944213  1.503074e-22  -9.770769
+SKOLA=no_school                  4.4374010  3.3613445 12.527298  3.937307e-23  -9.905567
+B3=worse last y                  7.6658053 10.6842737 23.049434  3.472994e-23  -9.918101
+B62=emot less_w.like_yes         8.9463221 16.2064826 29.958309  2.938715e-23  -9.934764
+B44=climstairs_lim_littl         8.1916538 12.7250900 25.689895  2.838006e-23  -9.938239
+B410=dress_limited               3.9316239  2.7611044 11.614056  1.744010e-23  -9.986635
+MAT_STAN=verylow                 6.0465116  6.2424970 17.073655  1.697608e-23  -9.989309
+B12_2=healthy_mostly false       6.0185185  6.2424970 17.153067  9.474667e-24 -10.046958
+B11=probl life_some time         8.2712370 13.3253301 26.642843  7.493202e-24 -10.070060
+C15=act-reading                 10.7522124 29.1716687 44.867977  4.151435e-24 -10.127978
+Edad_classe=56_65 a\xf1os        5.3884712  5.1620648 15.842764  1.035795e-24 -10.262872
+B8=bodily pain_moderate          7.7232502 11.5246098 24.677387  8.744405e-25 -10.279207
+B10_5=lot energy_none time       1.9823789  1.0804322  9.013302  9.300335e-26 -10.493024
+B43=groc_much limited            5.3167421  5.6422569 17.550129  5.276930e-28 -10.970858
+B10_5=lot energy_little t        6.3551402  8.1632653 21.242803  4.079979e-28 -10.994092
+B3=much worse last y             1.1547344  0.6002401  8.596387  1.419785e-28 -11.088928
+B10_1=full pep_little time       5.3610503  5.8823529 18.145722  8.422003e-29 -11.135554
+B10_8=happy_little time          4.0816327  3.6014406 14.592019  5.223857e-29 -11.178027
+Edad_classe=66_75 a\xf1os        4.6454768  4.5618247 16.239825  2.786520e-29 -11.233672
+B12_3=expect_mostly true         5.3459119  6.1224490 18.939845  2.707542e-30 -11.437770
+B61=emot cut work_yes            6.7158067  9.8439376 24.240619  2.261712e-30 -11.453373
+B49=walk1block_limited           3.3430233  2.7611044 13.658924  5.787801e-31 -11.570892
+B8=bodily pain_severe            3.1065089  2.5210084 13.420687  1.002022e-31 -11.720396
+B43=groc_limited a littl         6.5269944  9.7238896 24.637681  3.093189e-32 -11.819555
+B48=walkseg_limited              4.2873696  4.4417767 17.133214  3.294612e-33 -12.006247
+B9=pain act_quite a bit          3.4528552  3.1212485 14.949375  2.044520e-33 -12.045653
+B46=bending_much limited         5.5555556  7.3229292 21.798690  4.344804e-34 -12.172698
+B47=walk1km_much limited         5.0359712  6.7226891 22.076633  2.603319e-38 -12.942124
+B45=clim1_limited                4.2735043  5.4021609 20.905301  1.309853e-41 -13.513047
+B42=mod phy_much limited         3.8844622  4.6818727 19.932500  2.242514e-42 -13.642339
+B44=climstairs_much limt         4.4520548  6.2424970 23.188406  2.265069e-45 -14.136424
+B12_4=excellent_mostly fal       3.4599156  4.9219688 23.525908  1.725029e-55 -15.691654
+B51=health_cut work_yes          5.6750299 11.4045618 33.234068  5.861968e-56 -15.760014
+B2=worseothers                   0.9523810  0.9603842 16.676593  1.309546e-59 -16.282703
+B53=limited_kindwork_yes         5.5302166 11.6446579 34.822315  2.559079e-61 -16.521740
+B52=health_wouldlike_yes         6.4341847 15.7262905 40.420885  6.652544e-63 -16.740413
+B12_4=excellent_def.false        0.8171604  0.9603842 19.436172  1.527792e-72 -18.013458
+B54=health_diff work_yes         5.1256281 12.2448980 39.507643  3.898891e-79 -18.835032
+B41=hard phy_much limite         4.1231446  9.0036014 36.112766  2.751309e-84 -19.452951
+
+
+$quanti.var
+                 Eta2       P-value
+PF_Phisica 0.29189550  0.000000e+00
+RP_Role.li 0.28900931  0.000000e+00
+EV_Energy  0.32120422  0.000000e+00
+P_Pain     0.34106612  0.000000e+00
+HP_General 0.65916093  0.000000e+00
+SF_Social  0.24738405 1.792650e-308
+MH_Mental  0.22624122 3.074068e-278
+D4KOLIKO   0.14057449 1.797174e-151
+RE_Role.li 0.11965424 1.689370e-137
+D1AKOLIK   0.11953508 2.864109e-130
+C17S_KT    0.11762102 9.801353e-118
+C17D_KT    0.06018446  7.688665e-58
+C16VIS     0.04597778  2.549076e-49
+D13KOLIK   0.03886729  2.624610e-41
+D1BKOLIK   0.03688910  1.165313e-36
+Edad       0.02695455  9.564131e-29
+D3KOLIKO   0.01602254  1.182594e-16
+D1CKOLIK   0.01386883  2.490769e-13
+C16TEZ     0.01089767  3.599854e-11
+
+$quanti
+$quanti$health_excellent
+              v.test Mean in category Overall mean sd in category Overall sd       p.value
+HP_General 29.218469      83.70762712   54.2644431     11.9817705  22.994332 1.129970e-187
+EV_Energy  21.997408      72.58474576   51.8314473     16.1032559  21.528268 3.049131e-107
+P_Pain     18.690525      89.03065678   64.5094679     18.3396181  29.937360  5.912844e-78
+MH_Mental  18.044727      77.20338983   61.6906889     13.9700402  19.616909  8.679292e-73
+SF_Social  16.087726      81.19254237   64.8344213     13.0837831  23.202363  3.110536e-58
+RP_Role.li 15.663880      92.31991525   63.0037721     22.4450691  42.707186  2.670928e-55
+PF_Phisica 13.936624      88.68644068   69.9295215     25.1577899  30.711243  3.794706e-44
+C16VIS     11.895169     172.61864407  167.5179670     10.4769488   9.784771  1.253984e-32
+RE_Role.li 10.280939      90.60739407   72.4241155     24.7171713  40.358300  8.588649e-25
+D1CKOLIK    3.517572       1.86228814    1.4055986      3.2187234   2.962590  4.355143e-04
+D3KOLIKO   -2.376579       0.09533898    0.3982529      0.7051712   2.908443  1.747404e-02
+C16TEZ     -3.817189      71.08686441   73.4975184     15.3930670  14.410686  1.349806e-04
+D13KOLIK   -4.236100       0.51906780    2.0710741      4.7674617   8.360279  2.274357e-05
+D1BKOLIK   -5.626877       0.72669492    1.5979750      2.3697010   3.533327  1.835014e-08
+C17D_KT    -5.773653      69.44703390   73.2205678     13.2991370  14.913893  7.757096e-09
+Edad       -6.570240      43.76059322   49.0855668     18.2779822  18.493951  5.023430e-11
+C17S_KT    -7.767849     110.25211864  119.2463768     21.0135760  26.421536  7.983031e-15
+D4KOLIKO   -8.624877       1.27118644    5.0774270      3.2803760  10.070170  6.416182e-18
+D1AKOLIK   -8.796584       1.56991525    4.5229303      3.7987870   7.660287  1.410437e-18
+
+$quanti$health_fair
+               v.test Mean in category Overall mean sd in category Overall sd      p.value
+C17S_KT      5.700217       122.804085   119.246377      26.178725  26.421536 1.196548e-08
+C17D_KT      5.138942        75.031014    73.220568      14.914065  14.913893 2.762901e-07
+Edad         3.526823        50.626324    49.085567      18.258387  18.493951 4.205786e-04
+D1AKOLIK     2.991750         5.064297     4.522930       6.444456   7.660287 2.773836e-03
+C16TEZ       2.573813        74.373676    73.497518      13.782154  14.410686 1.005848e-02
+D4KOLIKO     2.068963         5.569592     5.077427       9.230888  10.070170 3.854960e-02
+SF_Social   -2.881468        63.255113    64.834421      21.634601  23.202363 3.958279e-03
+MH_Mental   -3.641953        60.003026    61.690689      18.219372  19.616909 2.705772e-04
+RP_Role.li  -4.210880        58.755673    63.003772      41.783500  42.707186 2.543781e-05
+EV_Energy   -4.895414        49.341906    51.831447      18.675456  21.528268 9.809922e-07
+PF_Phisica  -4.912920        66.365356    69.929522      27.041607  30.711243 8.972982e-07
+P_Pain      -6.183965        60.136248    64.509468      26.561993  29.937360 6.251139e-10
+HP_General -15.022822        46.104387    54.264443      14.696568  22.994332 5.204402e-51
+
+$quanti$health_good
+              v.test Mean in category Overall mean sd in category Overall sd      p.value
+HP_General 13.647013       61.5098756   54.2644431      13.479281  22.994332 2.103236e-42
+PF_Phisica 10.854239       77.6261887   69.9295215      26.003938  30.711243 1.903852e-27
+P_Pain     10.424172       71.7149159   64.5094679      25.590569  29.937360 1.923268e-25
+RP_Role.li  9.402275       72.2750549   63.0037721      38.182699  42.707186 5.339571e-21
+SF_Social   8.808773       69.5534601   64.8344213      19.474163  23.202363 1.265232e-18
+EV_Energy   7.331096       55.4754938   51.8314473      18.140332  21.528268 2.282782e-13
+RE_Role.li  6.198951       78.2005121   72.4241155      36.302245  40.358300 5.684066e-10
+MH_Mental   6.067591       64.4389173   61.6906889      16.993838  19.616909 1.298427e-09
+C16VIS      4.089378      168.4418435  167.5179670       9.631315   9.784771 4.325307e-05
+C17D_KT    -2.620471       72.3182151   73.2205678      14.446630  14.913893 8.780833e-03
+D3KOLIKO   -2.673378        0.2187271    0.3982529       1.322077   2.908443 7.509158e-03
+D1BKOLIK   -4.083806        1.2648135    1.5979750       2.952905   3.533327 4.430402e-05
+D13KOLIK   -4.586137        1.1858083    2.0710741       5.627910   8.360279 4.515234e-06
+C17S_KT    -4.790295      116.3240673  119.2463768      24.670805  26.421536 1.665365e-06
+D4KOLIKO   -7.047033        3.4389173    5.0774270       6.730569  10.070170 1.827734e-12
+D1AKOLIK   -7.121554        3.2633504    4.5229303       4.925143   7.660287 1.067172e-12
+
+$quanti$health_poor
+               v.test Mean in category Overall mean sd in category Overall sd       p.value
+D4KOLIKO    21.328219       11.0000000    5.0774270      15.664018  10.070170 6.212904e-101
+D1AKOLIK    20.187184        8.7871524    4.5229303      12.368500   7.660287  1.268943e-90
+C17S_KT     16.352004      131.1601151  119.2463768      28.720880  26.421536  4.209077e-60
+D13KOLIK    12.575898        4.9702780    2.0710741      13.313892   8.360279  2.865258e-36
+D1BKOLIK    11.595065        2.7277085    1.5979750       5.459502   3.533327  4.365338e-31
+C17D_KT     10.975828       77.7344199   73.2205678      15.657670  14.913893  4.994616e-28
+D3KOLIKO     8.734318        1.0987536    0.3982529       5.531286   2.908443  2.451314e-18
+Edad         8.311192       53.3240652   49.0855668      18.180370  18.493951  9.474571e-17
+C16TEZ       2.745921       74.5886865   73.4975184      14.533094  14.410686  6.034133e-03
+D1CKOLIK    -6.291030        0.8916587    1.4055986       2.528000   2.962590  3.153667e-10
+RE_Role.li -21.973051       47.9705465   72.4241155      46.191952  40.358300 5.214496e-107
+C16VIS     -24.412817      160.9309684  167.5179670      10.773923   9.784771 1.250143e-131
+MH_Mental  -28.506484       46.2703739   61.6906889      19.628763  19.616909 9.735518e-179
+SF_Social  -31.286869       44.8167593   64.8344213      24.157946  23.202363 7.040541e-215
+RP_Role.li -33.451071       23.6097795   63.0037721      36.232367  42.707186 2.483064e-245
+EV_Energy  -33.625788       31.8696069   51.8314473      18.407455  21.528268 7.045081e-248
+PF_Phisica -33.694108       41.3950144   69.9295215      26.985761  30.711243 7.051493e-249
+P_Pain     -35.456591       35.2390125   64.5094679      24.772785  29.937360 2.295846e-275
+HP_General -45.011432       25.7238734   54.2644431      13.775646  22.994332  0.000000e+00
+
+$quanti$`health_very good`
+               v.test Mean in category Overall mean sd in category Overall sd       p.value
+HP_General  27.629908       74.3769508   54.2644431     11.3940465  22.994332 4.866555e-168
+P_Pain      18.856974       82.3805762   64.5094679     20.4367210  29.937360  2.575445e-79
+PF_Phisica  18.643670       88.0552221   69.9295215     22.3122945  30.711243  1.421452e-77
+RP_Role.li  17.930229       87.2448980   63.0037721     27.3664396  42.707186  6.849667e-72
+EV_Energy   16.442450       63.0372149   51.8314473     15.4140862  21.528268  9.499981e-61
+SF_Social   14.373363       75.3918127   64.8344213     16.0337253  23.202363  7.604648e-47
+MH_Mental   13.987379       70.3769508   61.6906889     14.3794253  19.616909  1.861465e-44
+C16VIS      13.706170      171.7635054  167.5179670      9.5217955   9.784771  9.325198e-43
+RE_Role.li  10.590394       85.9545258   72.4241155     29.1515630  40.358300  3.302001e-26
+D1CKOLIK     5.249836        1.8979592    1.4055986      3.3709080   2.962590  1.522346e-07
+D3KOLIKO    -2.852108        0.1356543    0.3982529      0.8762809   2.908443  4.343034e-03
+D1BKOLIK    -4.508909        1.0936375    1.5979750      2.2544494   3.533327  6.516184e-06
+C16TEZ      -4.695746       71.3553421   73.4975184     14.3402348  14.410686  2.656360e-06
+Edad        -6.051587       45.5426170   49.0855668     18.3933524  18.493951  1.434256e-09
+D13KOLIK    -6.265075        0.4129652    2.0710741      2.1411872   8.360279  3.726452e-10
+D1AKOLIK   -10.136529        2.0648259    4.5229303      2.7556304   7.660287  3.803759e-24
+C17D_KT    -10.391404       68.3145258   73.2205678     13.9501196  14.913893  2.713281e-25
+D4KOLIKO   -10.512096        1.7262905    5.0774270      2.6784616  10.070170  7.598584e-26
+C17S_KT    -12.758370      108.5750300  119.2463768     22.9863758  26.421536  2.799998e-37
+
+
+attr(,"class")
+[1] "catdes" "list " 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
