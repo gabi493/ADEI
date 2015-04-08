@@ -1,0 +1,8 @@
+library(FactoMineR)
+temperature <- read.table("http://factominer.free.fr/livre/temperat.csv",header=TRUE, sep=";", dec=".", row.names=1)
+res.pca <- PCA(temperature[1:23,], scale.unit=TRUE, ncp=Inf,graph = FALSE,quanti.sup=13:16,quali.sup=17)
+res.hcpc <- HCPC(res.pca)
+res.hcpc <- HCPC(res.pca,t.levels="all")
+res.hcpc$desc.var
+res.hcpc$desc.axe
+res.hcpc$desc.ind

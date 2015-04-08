@@ -1,0 +1,327 @@
+ls()
+rm(list = ls()) #eliminar objetos#
+### CARGAR LOS PACKAGES FACTOMINER Y MASS#
+library(FactoMineR)#
+library(MASS)#
+# Leer la base (que está en este mismo directorio)#
+baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")#
+baseCD<-read.csv2("Croacia_Var_C_D.csv",row.names=1,header=TRUE,dec=".")#
+base<-cbind(baseB,baseCD)#
+### SF36 Health Survey ####
+browseURL("http://www.sf-36.org/tools/sf36.shtml")#
+# información inicial sobre la base#
+dim(base)#
+colnames(base)#
+summary(base)#
+?summary#
+summary(base,maxsum=100)#
+summary(base$Sex)#
+# ordenar los niveles de las variables categóricas e indicar que serán#
+# consideradas como factores (si hace falta)#
+summary(base$SKOLA)#
+base$SKOLA<-factor(base$SKOLA,levels=c("no_school","primary_school","handicraft_school",#
+                  "grammar_school","high_school","faculty_PhD_MSc"))#
+summary(base$B1)#
+base$B1<-factor(B1,levels=c("health_excellent","health_very good","health_good","health_fair","health_poor" ))#
+summary(base$B1)#
+#...hacer lo mismo para las otras variables categóricas   Imperativo!#
+# no cambia los resultados pero facilita la lectura y el manejo de ciertos comandos#
+summary(base[,1:3],maxsum=100)#
+summary(base[,4:13])#
+# Crear una nueva variable cruzando nivel de estudios y edad_en_clases#
+SKOLAbis<-base$SKOLA#
+levels(SKOLAbis)<-c("faculty-high-school","faculty-high-school","gram-handi-school","gram-handi-school","primary-no-school","primary-no-school")          #
+summary(SKOLAbis)#
+Edadcla<-base$Edad_classe#
+summary(Edadcla)#
+levels(Edadcla)<-c("18-35 años","18-35 años","36-55 años","36-55 años","56 y más","56 y más","56 y más")#
+summary(Edadcla)#
+JovHigh<-which((Edadcla=="18-35 años") & (SKOLAbis=="faculty-high-school"))#
+JovHigh#
+JovMedium<-which((Edadcla=="18-35 años") & (SKOLAbis=="gram-handi-school"))#
+JovLow<-which((Edadcla=="18-35 años") & (SKOLAbis=="primary-no-school"))#
+MidHigh<-which((Edadcla=="36-55 años") & (SKOLAbis=="faculty-high-school"))#
+MidMedium<-which((Edadcla=="36-55 años") & (SKOLAbis=="gram-handi-school"))#
+MidLow<-which((Edadcla=="36-55 años") & (SKOLAbis=="primary-no-school"))#
+OldHigh<-which((Edadcla=="56 y más") & (SKOLAbis=="faculty-high-school"))#
+OldMedium<-which((Edadcla=="56 y más") & (SKOLAbis=="gram-handi-school"))#
+OldLow<-which((Edadcla=="56 y más") & (SKOLAbis=="primary-no-school"))#
+Edad_Skol<-factor()#
+levels(Edad_Skol)<-c("JovHigh","JovMedium","JovLow","MidHigh","MidMedium","MidLow","OldHigh","OldMedium","OldLow")#
+Edad_Skol[JovHigh]<-"JovHigh"#
+Edad_Skol[JovMedium]<-"JovMedium"#
+Edad_Skol[JovLow]<-"JovLow"#
+Edad_Skol[MidHigh]<-"MidHigh"#
+Edad_Skol[MidMedium]<-"MidMedium"#
+Edad_Skol[MidLow]<-"MidLow"#
+Edad_Skol[OldHigh]<-"OldHigh"#
+Edad_Skol[OldMedium]<-"OldMedium"#
+Edad_Skol[OldLow]<-"OldLow"#
+summary(Edad_Skol)#
+#  Profiling  =============================================================================================================#
+#### Describir variables privilegiadas (cuantitativas o cualitativas)#
+summary(base[,52])#
+condes(base,num.var=52)   # caracterizar el score global de salud#
+summary(base[,5])#
+catdes(base,num.var=5)   # caracterizar el sexo
+rm(list = ls()) #eliminar objetos#
+### CARGAR LOS PACKAGES FACTOMINER Y MASS#
+library(FactoMineR)
+library(MASS)
+rm(list = ls()) #eliminar objetos#
+### CARGAR LOS PACKAGES FACTOMINER Y MASS#
+library(FactoMineR)#
+library(MASS)#
+# Leer la base (que está en este mismo directorio)#
+baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")#
+baseCD<-read.csv2("Croacia_Var_C_D.csv",row.names=1,header=TRUE,dec=".")#
+base<-cbind(baseB,baseCD)#
+### SF36 Health Survey ####
+browseURL("http://www.sf-36.org/tools/sf36.shtml")#
+# información inicial sobre la base#
+dim(base)#
+colnames(base)#
+summary(base)#
+?summary#
+summary(base,maxsum=100)#
+summary(base$Sex)#
+# ordenar los niveles de las variables categóricas e indicar que serán#
+# consideradas como factores (si hace falta)#
+summary(base$SKOLA)#
+base$SKOLA<-factor(base$SKOLA,levels=c("no_school","primary_school","handicraft_school",#
+                  "grammar_school","high_school","faculty_PhD_MSc"))#
+summary(base$B1)#
+base$B1<-factor(B1,levels=c("health_excellent","health_very good","health_good","health_fair","health_poor" ))#
+summary(base$B1)#
+#...hacer lo mismo para las otras variables categóricas   Imperativo!#
+# no cambia los resultados pero facilita la lectura y el manejo de ciertos comandos#
+summary(base[,1:3],maxsum=100)#
+summary(base[,4:13])#
+# Crear una nueva variable cruzando nivel de estudios y edad_en_clases#
+SKOLAbis<-base$SKOLA#
+levels(SKOLAbis)<-c("faculty-high-school","faculty-high-school","gram-handi-school","gram-handi-school","primary-no-school","primary-no-school")          #
+summary(SKOLAbis)#
+Edadcla<-base$Edad_classe#
+summary(Edadcla)#
+levels(Edadcla)<-c("18-35 años","18-35 años","36-55 años","36-55 años","56 y más","56 y más","56 y más")#
+summary(Edadcla)#
+JovHigh<-which((Edadcla=="18-35 años") & (SKOLAbis=="faculty-high-school"))#
+JovHigh#
+JovMedium<-which((Edadcla=="18-35 años") & (SKOLAbis=="gram-handi-school"))#
+JovLow<-which((Edadcla=="18-35 años") & (SKOLAbis=="primary-no-school"))#
+MidHigh<-which((Edadcla=="36-55 años") & (SKOLAbis=="faculty-high-school"))#
+MidMedium<-which((Edadcla=="36-55 años") & (SKOLAbis=="gram-handi-school"))#
+MidLow<-which((Edadcla=="36-55 años") & (SKOLAbis=="primary-no-school"))#
+OldHigh<-which((Edadcla=="56 y más") & (SKOLAbis=="faculty-high-school"))#
+OldMedium<-which((Edadcla=="56 y más") & (SKOLAbis=="gram-handi-school"))#
+OldLow<-which((Edadcla=="56 y más") & (SKOLAbis=="primary-no-school"))#
+Edad_Skol<-factor()#
+levels(Edad_Skol)<-c("JovHigh","JovMedium","JovLow","MidHigh","MidMedium","MidLow","OldHigh","OldMedium","OldLow")#
+Edad_Skol[JovHigh]<-"JovHigh"#
+Edad_Skol[JovMedium]<-"JovMedium"#
+Edad_Skol[JovLow]<-"JovLow"#
+Edad_Skol[MidHigh]<-"MidHigh"#
+Edad_Skol[MidMedium]<-"MidMedium"#
+Edad_Skol[MidLow]<-"MidLow"#
+Edad_Skol[OldHigh]<-"OldHigh"#
+Edad_Skol[OldMedium]<-"OldMedium"#
+Edad_Skol[OldLow]<-"OldLow"#
+summary(Edad_Skol)#
+#  Profiling  =============================================================================================================#
+#### Describir variables privilegiadas (cuantitativas o cualitativas)#
+summary(base[,52])#
+condes(base,num.var=52)   # caracterizar el score global de salud#
+summary(base[,5])#
+catdes(base,num.var=5)   # caracterizar el sexo
+save.image()
+rm(list = ls()) #eliminar objetos#
+### CARGAR LOS PACKAGES FACTOMINER Y MASS#
+library(FactoMineR)#
+library(MASS)#
+# Leer la base (que está en este mismo directorio)#
+baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")#
+baseCD<-read.csv2("Croacia_Var_C_D.csv",row.names=1,header=TRUE,dec=".")#
+base<-cbind(baseB,baseCD)#
+### SF36 Health Survey ####
+browseURL("http://www.sf-36.org/tools/sf36.shtml")#
+# información inicial sobre la base#
+dim(base)#
+colnames(base)#
+summary(base)#
+?summary#
+summary(base,maxsum=100)#
+summary(base$Sex)#
+# ordenar los niveles de las variables categóricas e indicar que serán#
+# consideradas como factores (si hace falta)#
+summary(base$SKOLA)#
+base$SKOLA<-factor(base$SKOLA,levels=c("no_school","primary_school","handicraft_school",#
+                  "grammar_school","high_school","faculty_PhD_MSc"))#
+summary(base$B1)#
+base$B1<-factor(B1,levels=c("health_excellent","health_very good","health_good","health_fair","health_poor" ))#
+summary(base$B1)#
+#...hacer lo mismo para las otras variables categóricas   Imperativo!#
+# no cambia los resultados pero facilita la lectura y el manejo de ciertos comandos#
+summary(base[,1:3],maxsum=100)#
+summary(base[,4:13])#
+# Crear una nueva variable cruzando nivel de estudios y edad_en_clases#
+SKOLAbis<-base$SKOLA#
+levels(SKOLAbis)<-c("faculty-high-school","faculty-high-school","gram-handi-school","gram-handi-school","primary-no-school","primary-no-school")          #
+summary(SKOLAbis)#
+Edadcla<-base$Edad_classe#
+summary(Edadcla)#
+levels(Edadcla)<-c("18-35 años","18-35 años","36-55 años","36-55 años","56 y más","56 y más","56 y más")#
+summary(Edadcla)#
+JovHigh<-which((Edadcla=="18-35 años") & (SKOLAbis=="faculty-high-school"))#
+JovHigh#
+JovMedium<-which((Edadcla=="18-35 años") & (SKOLAbis=="gram-handi-school"))#
+JovLow<-which((Edadcla=="18-35 años") & (SKOLAbis=="primary-no-school"))#
+MidHigh<-which((Edadcla=="36-55 años") & (SKOLAbis=="faculty-high-school"))#
+MidMedium<-which((Edadcla=="36-55 años") & (SKOLAbis=="gram-handi-school"))#
+MidLow<-which((Edadcla=="36-55 años") & (SKOLAbis=="primary-no-school"))#
+OldHigh<-which((Edadcla=="56 y más") & (SKOLAbis=="faculty-high-school"))#
+OldMedium<-which((Edadcla=="56 y más") & (SKOLAbis=="gram-handi-school"))#
+OldLow<-which((Edadcla=="56 y más") & (SKOLAbis=="primary-no-school"))#
+Edad_Skol<-factor()#
+levels(Edad_Skol)<-c("JovHigh","JovMedium","JovLow","MidHigh","MidMedium","MidLow","OldHigh","OldMedium","OldLow")#
+Edad_Skol[JovHigh]<-"JovHigh"#
+Edad_Skol[JovMedium]<-"JovMedium"#
+Edad_Skol[JovLow]<-"JovLow"#
+Edad_Skol[MidHigh]<-"MidHigh"#
+Edad_Skol[MidMedium]<-"MidMedium"#
+Edad_Skol[MidLow]<-"MidLow"#
+Edad_Skol[OldHigh]<-"OldHigh"#
+Edad_Skol[OldMedium]<-"OldMedium"#
+Edad_Skol[OldLow]<-"OldLow"#
+summary(Edad_Skol)#
+#  Profiling  =============================================================================================================#
+#### Describir variables privilegiadas (cuantitativas o cualitativas)#
+summary(base[,52])#
+condes(base,num.var=52)   # caracterizar el score global de salud#
+summary(base[,5])#
+catdes(base,num.var=5)   # caracterizar el sexo
+library(FactoMineR)
+library(MASS)
+rm(list = ls()) #eliminar objetos
+baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")#
+baseCD<-read.csv2("Croacia_Var_C_D.csv",row.names=1,header=TRUE,dec=".")#
+base<-cbind(baseB,baseCD)#
+colnames(base)
+base$SKOLA<-factor(base$SKOLA,levels=c("no_school","primary_school","handicraft_school",#
+                 "grammar_school","high_school","faculty_PhD_MSc"))#
+base$B1<-factor(base$B1,levels=c("health_excellent","health_very good","health_good","health_fair","health_poor" ))#
+summary(base$SKOLA)#
+summary(base$B1)
+SKOLAbis<-base$SKOLA#
+summary(SKOLAbis)#
+levels(SKOLAbis)<-c("primary-no-school","primary-no-school","gram-handi-school","gram-handi-school","faculty-high-school","faculty-high-school")          #
+summary(SKOLAbis)#
+Edadcla<-base$Edad_classe#
+levels(Edadcla)#
+summary(Edadcla)#
+levels(Edadcla)<-c("18_35 años","18_35 años","36_55 años","36_55 años","56 y más","56 y más","56 y más")#
+summary(Edadcla)
+JovHigh<-which((Edadcla=="18_35 años") & (SKOLAbis=="faculty-high-school"))#
+JovHigh#
+JovMedium<-which((Edadcla=="18_35 años") & (SKOLAbis=="gram-handi-school"))#
+JovLow<-which((Edadcla=="18_35 años") & (SKOLAbis=="primary-no-school"))#
+MidHigh<-which((Edadcla=="36_55 años") & (SKOLAbis=="faculty-high-school"))#
+MidMedium<-which((Edadcla=="36_55 años") & (SKOLAbis=="gram-handi-school"))#
+MidLow<-which((Edadcla=="36_55 años") & (SKOLAbis=="primary-no-school"))#
+OldHigh<-which((Edadcla=="56 y más") & (SKOLAbis=="faculty-high-school"))#
+OldMedium<-which((Edadcla=="56 y más") & (SKOLAbis=="gram-handi-school"))#
+OldLow<-which((Edadcla=="56 y más") & (SKOLAbis=="primary-no-school"))#
+OldLow#
+Edad_Skol<-factor()#
+levels(Edad_Skol)<-c("JovHigh","JovMedium","JovLow","MidHigh","MidMedium","MidLow","OldHigh","OldMedium","OldLow")#
+Edad_Skol[1:100]#
+Edad_Skol[JovHigh]<-"JovHigh"#
+Edad_Skol[JovMedium]<-"JovMedium"#
+Edad_Skol[JovLow]<-"JovLow"#
+Edad_Skol[MidHigh]<-"MidHigh"#
+Edad_Skol[MidMedium]<-"MidMedium"#
+Edad_Skol[MidLow]<-"MidLow"#
+Edad_Skol[OldHigh]<-"OldHigh"#
+Edad_Skol[OldMedium]<-"OldMedium"#
+Edad_Skol[OldLow]<-"OldLow"#
+summary(Edad_Skol)
+dim(base)#
+base[,83]<-Edad_Skol#
+colnames(base)<-c(colnames(base)[1:82],"Edad_Skol")#
+colnames(base)#
+# Se empieza el análisis en componentes principales tomando los "scores" como activos#
+par(cex=0.5)#
+### primero, sólo las variables activas#
+summary(base[,45:52])#
+?PCA#
+res.pca<-PCA(base[,45:52]) #
+names(res.pca)#
+summary(res.pca)
+colnames(base[,c(1,5,44,45:52,83)])
+res.pca<-PCA(base[,c(1,5,44,45:52,83)],quanti.sup=3,quali.sup=c(1,2,12),ncp=2,graph=F)
+res.pca<-PCA(base[,c(1,5,44,45:52,83)],quanti.sup=3,quali.sup=c(1,2,12),ncp=2,graph=T)
+res.pca¢eig
+res.pca$eig
+?HCPC
+res.hcpc<-HCPC(res.pca,nb.clust=0,min=2)
+res.hcpc<-HCPC(res.pca,nb.clust=0,min=2)
+names(res.hcpc)
+res.hcpc$data.clust
+row.names(res.hcpc$data.clust)
+summary(res.hcpc$data.clust$clust)
+DataClust<-res.hcpc$data.clust
+DataClust<-DataClust[row.names(base),]
+row.names (DataClust)
+DataClust<-DataClust[row.names(base),]
+names(res.hcpc$desc.var)
+res.hcpc$desc.var$test.chi2
+SexXClus<-table(res.hcpc$data.clust$Sex,res.hcpc$data.clust$clust)
+sweep(SexXClus,2,apply(SexXClus,2,sum),"/")
+SexXClus
+res.hcpc$desc.var$category
+poorXclust1<-table(res.hcpc$data.clust$B1,res.hcpc$data.clust$clust)[5,1]
+poorXclust1
+res.hcpc$data.clust$B1
+poor<-sum(res.hcpc$data.clust$B1=="health_poor")
+poor
+clust1<-sum(res.hcpc$data.clust$clust=="1")
+clust1
+N<-nrow(res.hcpc$data.clust)
+table(res.hcpc$data.clust$B1,res.hcpc$data.clust$clust)[5,1]
+table(res.hcpc$data.clust$B1,res.hcpc$data.clust$clust)
+poorXclust1/poor ###Cla/Mod
+poorXclust1/clust1 ###Mod/Cla
+poor/N ###Global
+res.hcpc$desc.var$quanti.var
+res.hcpc$desc.var$quanti
+mean(res.hcpc$data.clust$Edad[res.hcpc$data.clust$clust==1])
+mean(res.hcpc$data.clust$Edad)
+sd(res.hcpc$data.clust$Edad[res.hcpc$data.clust$clust==1])
+sd(res.hcpc$data.clust$Edad)
+names(res.hcpc$desc.axes)
+res.hcpc$desc.axes$quanti.var
+res.hcpc$desc.axes$quanti
+names(res.hcpc$desc.ind)
+res.hcpc$desc.ind$para
+res.hcpc$desc.ind$dist
+para1<-which(rownames(res.pca$ind$coord)%in%names(res.hcpc$desc.ind$para[[1]]))#
+para2<-which(rownames(res.pca$ind$coord)%in%names(res.hcpc$desc.ind$para[[2]]))#
+dist1<-which(rownames(res.pca$ind$coord)%in%names(res.hcpc$desc.ind$dist[[1]]))#
+dist2<-which(rownames(res.pca$ind$coord)%in%names(res.hcpc$desc.ind$dist[[2]]))#
+?plot.PCA#
+plot(res.pca,label="none",invisible="quali")#
+points(res.pca$ind$coord[para1,1],res.pca$ind$coord[para1,2],col="blue",cex=2,pch=16)#
+points(res.pca$ind$coord[dist1,1],res.pca$ind$coord[dist1,2],col="orange",cex=2,pch=16)#
+points(res.pca$ind$coord[para2,1],res.pca$ind$coord[para2,2],col="blue",cex=2,pch=16)#
+points(res.pca$ind$coord[dist2,1],res.pca$ind$coord[dist2,2],col="orange",cex=2,pch=16)
+res.hcpc$data.clust[which(rownames(res.hcpc$data.clust)%in%names(res.hcpc$desc.ind$para[[1]])),]
+res.hcpc$data.clust[which(rownames(res.hcpc$data.clust)%in%names(res.hcpc$desc.ind$dist[[1]])),]
+res.hcpc$data.clust[which(rownames(res.hcpc$data.clust)%in%names(res.hcpc$desc.ind$para[[2]])),]
+res.hcpc$data.clust[which(rownames(res.hcpc$data.clust)%in%names(res.hcpc$desc.ind$dist[[2]])),]
+names(res.hcpc$call)
+names(res.hcpc$call$t)
+res.hcpc$call$t$res
+res.hcpc$call$t$nb.clust
+res.hcpc$call$t$within[1:5]
+res.hcpc$call$t$quot[1:5]
+2.244554/5.458357
+res.hcpc$call$t$inert.gain[1:5]

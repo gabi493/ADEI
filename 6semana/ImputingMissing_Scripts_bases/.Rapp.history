@@ -1,0 +1,23 @@
+library(FactoMineR)#
+library(missMDA)#
+data(orange)#
+## #
+?estim_ncpPCA#
+nb <- estim_ncpPCA(orange,ncp.min=0,ncp.max=5,method.cv="Kfold",nbsim=20,pNA=0.05)#
+nb
+nb
+res.comp <- imputePCA(orange,ncp=nb$ncp)
+res.pca <- PCA(res.comp$completeObs)
+resMI <- MIPCA(orange,ncp=2)
+plot(resMI)
+?estim_ncpMCA
+data(vnf)
+View(vnf[1:20,])
+summary(vnf[1:20,])
+result <- estim_ncpMCA(vnf[1:20,], ncp.min=0, ncp.max=5,method.cv="Kfold",nbsim=20,pNA=0.05)
+result
+library(FactoMineR)#
+library(missMDA)#
+data(orange)
+nb <- estim_ncpPCA(orange,ncp.min=0,ncp.max=5,method.cv="Kfold",nbsim=20,pNA=0.05)
+nb

@@ -1,0 +1,23 @@
+library(FactoMineR)
+chicken <- read.table("http://factominer.free.fr/book/chicken.csv",header=TRUE,sep=";",dec=".",row.names=1)
+chicken <- as.data.frame(t(chicken))
+diet <- as.factor(c(rep("N",6),rep("J16",5),rep("J16R5",8),rep("J16R16",9),rep("J48",6),rep("J48R24",9)))
+chicken <- cbind.data.frame(diet,chicken)
+colnames(chicken)[1] <- "Diet"
+res.pca <- PCA(chicken,quali.sup=1)
+plot(res.pca, habillage=1, cex=0.7)
+plot(res.pca, choix="var", invisible="var")
+points(res.pca$var$coord[,1:2], cex=0.5)
+
+dimdesc(res.pca,proba=1e-5)
+plot(res.pca, habillage=1, axes=3:4)
+plot(res.pca, choix="var", invisible="var", axes=3:4)
+points(res.pca$var$coord[,3:4], cex=0.5)
+
+aa <- cbind.data.frame(chicken[,1], res.pca$ind$coord[,1:2])
+bb <- coord.ellipse(aa,bary=TRUE)
+plot.PCA(res.pca, habillage=1, ellipse=bb)
+
+aa <- cbind.data.frame(chicken[,1], res.pca$ind$coord[,3:4])
+bb <- coord.ellipse(aa, bary=TRUE)
+plot.PCA(res.pca, habillage=1, ellipse=bb, axes=3:4)

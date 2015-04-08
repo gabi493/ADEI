@@ -1,0 +1,17 @@
+library(FactoMineR)
+temperature <- read.table("http://factominer.free.fr/book/temperature.csv",header=TRUE, sep=";", dec=".", row.names=1)
+res <- PCA(temperature, ind.sup=24:35, quanti.sup=13:16, quali.sup=17)
+plot.PCA(res, choix="ind", habillage=17)
+dimdesc(res)
+res$eig
+res$ind
+res$ind.sup
+res$var
+res$quanti.sup
+res$quali.sup
+scale(temperature[1:23,1:16])*sqrt(22/23)
+cor(temperature[1:23,1:16])
+
+concat.data <- cbind.data.frame(temperature[1:23,17],res$ind$coord)
+ellipse.coord <- coord.ellipse(concat.data,bary=TRUE)
+plot.PCA(res, habillage=17, ellipse=ellipse.coord, cex=0.8)

@@ -1,0 +1,6 @@
+library(FactoMineR)
+wine = read.table("http://factominer.free.fr/book/wine.csv",header=TRUE,row.names=1,sep=";")
+colnames(wine)=c("1S.Michaud","2S.Renaudie","3S.Trotignon","4S.Buisse","5S.BuisseCristal","6C.AubSilex","7C.Aub.Marigny","8C.FontDomaine","9C.FontBrûlés","10C.FontCoteaux","Somme")
+res.ca=CA(wine,col.sup=11,row.sup=nrow(wine))
+barplot(res.ca$eig[,1],main="Valeurs propres",names.arg=1:nrow(res.ca$eig))
+round(res.ca$eig,3)

@@ -1,0 +1,56 @@
+rm(list = ls()) #eliminar objet
+library(FactoMineR)
+library(Matrix)
+baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")
+rm(list = ls()) #eliminar objet
+rm(list = ls()) #eliminar objet
+library(FactoMineR)
+library(Matrix)
+baseB<-read.csv2("Croacia-Scores-B-SocioeconoBIS.csv",row.names=1,header=TRUE,dec=".")
+baseCD<-read.csv2("Croacia_Var_C_D.csv",row.names=1,header=TRUE,dec=".")
+base<-cbind(baseB,baseCD)
+colnames(base)
+dim(base)
+colnames(base)
+?MCA
+colnames(base[,6:40])
+res.mca<-MCA(base[,6:40],level.ventil = 2)
+round(res.mca$eig[1:6,],2)
+barplot(res.mca$eig[,1],main="valeurs propres",names.arg=1:nrow(res.mca$eig))
+colnames(base [,c(18:24,28:36)])
+res.mca<-MCA(base [,c(18:24,28:36)],level.ventil = 2)
+round(res.mca$eig[1:6,],2)
+barplot(res.mca$eig[,1],main="valeurs propres",names.arg=1:nrow(res.mca$eig))
+colnames(base [,c(18:21)])
+res.mca<-MCA(base [,c(18:21)],level.ventil = 2)
+round(res.mca$eig[1:6,],2)
+barplot(res.mca$eig[,1],main="valeurs propres",names.arg=1:nrow(res.mca$eig))
+colnames(base [,c(22:24,28:36)])
+res.mca<-MCA(base [,c(22:24,28:36)],level.ventil = 2)
+round(res.mca$eig[1:6,],2)
+barplot(res.mca$eig[,1],main="valeurs propres",names.arg=1:nrow(res.mca$eig))
+res.mca<-MCA(base,quanti.sup=c(44:52),quali.sup=c(1:5,41:43),level.ventil = 2)
+base[which(row.names(base)=="I3040"),]
+base[which(row.names(base)=="I2479"),]
+base[which(row.names(base)=="I3040"),]
+base[which(row.names(base)=="I2479"),]
+base[which(row.names(base)=="I4578"),]
+base[which(row.names(base)=="I3040"),]#
+base[which(row.names(base)=="I2479"),]#
+base[which(row.names(base)=="I4578"),]
+round(res.mca$eig[1:6,],2)
+barplot(res.mca$eig[,1],main="valeurs propres",names.arg=1:nrow(res.mca$eig))
+?plot.MCA
+plot(res.mca,invisible=c("var","quali.sup","quanti.sup"))
+plot(res.mca,choix="ind",invisible=c("ind","var"))
+plot(res.mca,choix=c("quanti.sup"))
+plot(res.mca,choix=c("var"),invisible=c("quali.sup","quanti.sup"))
+dimdesc(res.mca,proba=0.01)
+res.mca<-MCA(base[,1:6])
+?HCPC
+base[which(row.names(base)=="I2479"),]
+base[which(row.names(base)=="I3040"),]
+names(res.hcpc)
+res.hcpc<-HCPC(res.mca,nb.clust=0,order=TRUE)
+names(res.hcpc)
+res.hcpc$data.clust

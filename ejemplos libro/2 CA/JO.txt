@@ -1,0 +1,12 @@
+library(FactoMineR)
+data(JO)
+res.ca <- CA(JO)
+res.ca
+round(res.ca$eig,2)
+barplot(res.ca$eig[,1], main="Eigenvalues",names.arg=paste("dim",1:nrow(res.ca$eig)))
+plot(res.ca, axes = 3:4)
+res.ca$col$contrib[rev(order(res.ca$col$contrib[,1])),1]
+res.ca$col$contrib[rev(order(res.ca$col$contrib[,2])),2]
+res.ca$call$marge.row
+res.ca$call$marge.col[rev(order(res.ca$call$marge.col))]
+res.ca$call$marge.col[rev(order(res.ca$call$marge.col))]*360

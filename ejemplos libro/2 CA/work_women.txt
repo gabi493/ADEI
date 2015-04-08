@@ -1,0 +1,42 @@
+library(FactoMineR)
+work <- read.table("http://factominer.free.fr/book/work_women.csv",header=TRUE, row.names=1, sep=";")
+summary(work)
+
+res.test.chi2 <- chisq.test(work[,1:3])
+res.test.chi2
+round(res.test.chi2$expected,1)
+round(res.test.chi2$residuals^2, 2)
+round(100 * res.test.chi2$residuals^2 / res.test.chi2$stat, 2)
+
+dd <- rbind(work,apply(work[,1:3],2,sum))
+rownames(dd)[4] <- "Profil moyen"
+round(prop.table(as.matrix(dd),margin=1),3)
+dd <- cbind(work,apply(work[,1:3],1,sum))
+colnames(dd)[4] <- "Profil moyen"
+round(prop.table(as.matrix(dd),margin=2),3)
+
+res.ca <- CA(work[,1:3])
+plot(res.ca, invisible="col")
+plot(res.ca, invisible="row")
+
+plot(res.ca,invisible="col")
+coord.col = sweep(res.ca$col$coord,2,sqrt(res.ca$eig[,1]),FUN="*")
+points(coord.col, pch=17, col="red")
+text(coord.col, rownames(coord.col), col="red")
+plot(res.ca,invisible="row")
+coord.row = sweep(res.ca$row$coord,2,sqrt(res.ca$eig[,1]),FUN="*")
+points(coord.row, pch=20, col="blue")
+text(coord.row, rownames(coord.row), col="blue")
+
+res.ca$eig
+barplot(res.ca$eig[,1], main="Eigenvalues",names.arg=1:nrow(res.ca$eig))
+
+cbind(res.ca$row$coord,res.ca$row$contrib,res.ca$row$cos2)
+cbind(res.ca$col$coord,res.ca$col$contrib,res.ca$col$cos2)
+
+res.ca$row$inertia
+res.ca$col$inertia
+res.ca$row$inertia/res.ca$call$marge.row
+res.ca$col$inertia/res.ca$call$marge.col
+
+res.ca2 <- CA(work,col.sup=4:ncol(work))

@@ -1,0 +1,25 @@
+library(FactoMineR)
+tea <- read.table("http://factominer.free.fr/book/tea.csv",header=TRUE,sep=";")
+nb.clusters <- 4
+coupure <- quantile(tea[,22], seq(0,1,1/nb.clusters))
+Xqual <- cut(tea[,22],coupure, include.lowest=TRUE)
+summary(Xqual)
+hist(tea$age,col="grey",main="Histogram of the variable age",freq=FALSE, xlab="age", nclass=15)
+
+vari <- tea[,22]
+res.hcpc <- HCPC(vari, iter.max=10)
+
+max.cla = unlist(by(res.hcpc$data.clust[,1],res.hcpc$data.clust[,2],max))
+breaks=c(min(vari),max.cla)
+aaQuali = cut(vari, breaks, include.lowest=TRUE)
+summary(aaQuali)
+
+don.quali <- don
+for (i in 1:ncol(don.quali)){
+  vari = don.quali[,i]
+  res.hcpc=HCPC(vari, nb.clust=-1, graph=FALSE)
+  maxi = unlist(by(res.hcpc$data.clust[,1], res.hcpc$data.clust[,2],max))
+  breaks=c(min(vari),maxi)
+  aaQuali = cut(vari, breaks, include.lowest=TRUE)
+  don.quali[,i] = aaQuali
+}

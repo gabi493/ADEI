@@ -1,0 +1,11 @@
+library(FactoMineR)
+tea <- read.table("http://factominer.free.fr/book/tea.csv",header=TRUE,sep=";")
+res.mca<-MCA(tea, ncp=20, quanti.sup=22, quali.sup=c(19:21,23:36), graph=FALSE)
+res.hcpc <- HCPC(res.mca)
+plot(res.hcpc,choice="map",ind.names=FALSE)
+round(res.hcpc$call$t$inert.gain,3)
+round(res.mca$eig[,1],3)
+
+res.hcpc$desc.var$test.chi2
+res.hcpc$desc.var$category
+res.hcpc$desc.axe

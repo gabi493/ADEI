@@ -1,0 +1,14 @@
+library(FactoMineR)
+gmo <- read.table("http://factominer.free.fr/book/gmo.csv",header=TRUE,sep=";")
+summary(gmo[,1:16])
+levels(gmo$Position.Al.H)[4] <- levels(gmo$Position.Al.H)[1]
+levels(gmo$Position.Culture) <- c("Favourable","Somewhat Against","Totally opposed","Favourable")
+summary(gmo[,1:16])
+summary(gmo[,17:21], maxsum=Inf)
+res <- MCA(gmo, ncp=5, quali.sup=17:21, graph = FALSE)
+res
+res <- MCA(gmo, ncp=5, quali.sup=17:21, graph=FALSE, level.ventil=0.05)
+plot.MCA(res,invisible=c("var","quali.sup"),label=FALSE)
+plot.MCA(res,invisible=c("ind","quali.sup"),label=FALSE)
+plot.MCA(res,invisible=c("ind","quali.sup"))
+plot.MCA(res, col.quali.sup="brown", invisible=c("quanti.sup","ind","var"))

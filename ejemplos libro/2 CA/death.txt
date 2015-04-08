@@ -1,0 +1,49 @@
+library(FactoMineR)
+deces <- read.table("http://factominer.free.fr/book/death.csv",header=TRUE, sep=";",row.names=1)
+colnames(deces) = c("0-1","1-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85-94","95 and more")
+res.ca=CA(deces,row.sup=66:nrow(deces), graph=FALSE)
+round(res.ca$call$marge.col,3)
+round(res.ca$call$marge.row[order(res.ca$call$marge.row)],3)
+par(las=1)
+barplot(res.ca$call$marge.col,horiz=TRUE)
+barplot(res.ca$call$marge.row[order(res.ca$call$marge.row)],horiz=TRUE)
+par(las=0)
+res.ca=CA(deces,row.sup=66:nrow(deces))
+barplot(res.ca$eig[,1],main="Eigenvalues",names.arg=1:nrow(res.ca$eig))
+res.ca$col$inertia/sum(res.ca$col$inertia)
+bb=round(cbind.data.frame(res.ca$call$marge.col,sqrt(res.ca$col$inertia/res.ca$call$marge.col),res.ca$col$inertia,res.ca$col$inertia/sum(res.ca$col$inertia)),4)
+colnames(bb)=c("Weight","Distance","Inertia","% of inertia")
+
+round(res.ca$col$contrib[,1],3)
+
+res.ca$row$contrib[rev(order(res.ca$row$contrib[,1])),1]
+
+res.ca=CA(deces,row.sup=c(66:nrow(deces)),ncp=Inf)
+round(dist(res.ca$col$coord),3)
+round(cbind(res.ca$col$contrib[,2:5],res.ca$col$cos2[,2:5]),3)
+
+cbind(res.ca$row$contrib[,2],res.ca$row$cos2[,2],res.ca$call$marge.row)[rev(order(res.ca$row$contrib[,2])),]
+cbind(res.ca$row$contrib[,3],res.ca$row$cos2[,3],res.ca$call$marge.row)[rev(order(res.ca$row$contrib[,3])),]
+
+res.ca$row.sup$coord <- res.ca$row.sup$coord[130:157,]
+plot.CA(res.ca,invisible=c("row","col"),axes=2:3)
+points(res.ca$row.sup$coord[,2:3],type="l")
+
+tab.evol <- deces[-(66:194),]
+res.evol <- CA(tab.evol,row.sup=66:nrow(tab.evol),graph=FALSE)
+plot.CA(res.evol,invisible=c("row","col"),axes=2:3)
+points(res.evol$row.sup$coord[,2:3],type="l")
+
+## Figure 2.23
+res.ca=CA(deces,row.sup=c(66:nrow(deces)))
+garder = c(5,26,29,32,43,46)
+plot(res.ca,selectRow= garder,axes=2:3,unselect=1,invisible="row.sup")
+for (i in garder){
+ index = grep(rownames(res.ca$row$coord)[i],rownames(res.ca$row.sup$coord))
+ points(c(res.ca$row.sup$coord[index[1],2],res.ca$row.sup$coord[index[2],2]),c(res.ca$row.sup$coord[index[1],3],res.ca$row.sup$coord[index[2],3]),pch=20,col="darkblue")
+ text(c(res.ca$row.sup$coord[index[1],2],res.ca$row.sup$coord[index[2],2]),c(res.ca$row.sup$coord[index[1],3],res.ca$row.sup$coord[index[2],3]),label=c("06","79"),col="darkblue",pos=4,cex=0.8)
+ lines(c(res.ca$row.sup$coord[index[1],2],res.ca$row.sup$coord[index[2],2]),c(res.ca$row.sup$coord[index[1],3],res.ca$row.sup$coord[index[2],3]),col="darkblue")
+}
+points(c(res.ca$row.sup$coord[130,2],res.ca$row.sup$coord[157,2]),c(res.ca$row.sup$coord[130,3],res.ca$row.sup$coord[157,3]),pch=20,col="darkblue")
+text(c(res.ca$row.sup$coord[130,2],res.ca$row.sup$coord[157,2]),c(res.ca$row.sup$coord[130,3],res.ca$row.sup$coord[157,3]),label=c("1979","2006"),col="darkblue",pos=4,cex=0.8)
+lines(c(res.ca$row.sup$coord[130,2],res.ca$row.sup$coord[157,2]),c(res.ca$row.sup$coord[130,3],res.ca$row.sup$coord[157,3]),col="darkblue")
